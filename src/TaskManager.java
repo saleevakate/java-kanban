@@ -39,7 +39,6 @@ public class TaskManager {
         String description = scanner.nextLine();
         Epic newEpic = new Epic(generateId(), name, description, status);
         tasks.put(newEpic.getId(), newEpic);
-        System.out.println("Эпик задача добавлена");
     }
 
     public Task createSubtask(int parentId) {
@@ -49,8 +48,8 @@ public class TaskManager {
         String description = scanner.nextLine();
         Subtask newSubtask = new Subtask(generateId(), name, description, parentId, status);
         Epic parentTask = (Epic) getTaskById(parentId);
+        parentTask.addSubtask(newSubtask.getId());
         tasks.put(newSubtask.getId(), newSubtask);
-        System.out.println("Подзадача добавлена к задаче " + getTaskById(parentId));
         return newSubtask;
     }
 
@@ -81,16 +80,18 @@ public class TaskManager {
     public Task updateStatus(int id, TaskStatus taskStatus) {
         Task needTask = getTaskById(id);
         if (!(needTask instanceof Epic)) {
-            needTask.setTaskStatus(status);
+            needTask.setTaskStatus(taskStatus);
             if (needTask instanceof Subtask) {
-                updateStatusEpic(((Subtask) needTask).getId());
+                updateStatusEpic(((Subtask) needTask).getEpicId());
                 return needTask;
+            }
+            return needTask;
         } else {
             return needTask;
         }
     }
 
-    public void updateStatusEpic(int epicId) {
+    private void updateStatusEpic(int epicId) {
         Epic epicTask = (Epic) getTaskById(epicId);
         if (epicTask.getSubtasks().stream().allMatch(taskId -> getTaskById(taskId).getTaskStatus() == TaskStatus.NEW)) {
             epicTask.setTaskStatus(TaskStatus.NEW);

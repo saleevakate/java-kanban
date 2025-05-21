@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.util.HashMap;
 import java.util.Set;
 
 public class Main {
@@ -7,6 +6,7 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = new TaskManager();
         Scanner scanner = new Scanner(System.in);
+
 
         while (true) {
             System.out.println("Поехали!");
@@ -50,6 +50,7 @@ public class Main {
                     int id = scanner.nextInt();
                     System.out.println("Имя " + taskManager.getTaskById(id).getName());
                     System.out.println("Описание " + taskManager.getTaskById(id).getDescription());
+                    System.out.println("Статус " + taskManager.getTaskById(id).getTaskStatus());
                     break;
                 }
                 case 4: {
@@ -90,8 +91,9 @@ public class Main {
                     int id = scanner.nextInt();
                     Set<Integer> subtasksId = taskManager.getSubtasksById(id);
                     for (int i : subtasksId) {
-                        System.out.println(taskManager.getTaskById(i));
+                        System.out.println(taskManager.getTaskById(i).getName());
                     }
+                    break;
                 }
             }
         }
