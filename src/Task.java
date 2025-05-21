@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Task {
@@ -7,12 +8,13 @@ public class Task {
     private String description;
 
 
-    public Task(TaskStatus taskStatus, int id, String name, String description) {
-        this.taskStatus = taskStatus;
+    public Task(int id, String name, String description, TaskStatus taskStatus) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.taskStatus = taskStatus;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -57,4 +59,5 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }
