@@ -1,11 +1,10 @@
 import java.util.HashMap;
-import java.util.Scanner;
+import java.util.Objects;
 import java.util.Set;
 
 public class TaskManager {
-    static int idCounter = 0;
-    HashMap<Integer, Task> tasks = new HashMap<>();
-    Scanner scanner = new Scanner(System.in);
+    private static int idCounter = 0;
+    private HashMap<Integer, Task> tasks = new HashMap<>();
     TaskStatus status = TaskStatus.NEW;
 
     private static int generateId() {
@@ -15,39 +14,24 @@ public class TaskManager {
     public void getTasks() {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
-            System.out.println("Id задачи " + task.getId());
-            System.out.println("Имя " + task.getName());
-            System.out.println("Описание " + task.getDescription());
-            System.out.println("Статус " + task.getTaskStatus());
+            System.out.println(task.getName());
         }
     }
 
-    public void createTask() {
-        System.out.println("Введите имя задачи");
-        String name = scanner.nextLine();
-        System.out.println("Введите описание задачи");
-        String description = scanner.nextLine();
+    public void createTask(String name, String description) {
         Task newTask = new Task(generateId(), name, description, status);
         tasks.put(newTask.getId(), newTask);
         System.out.println("Задача добавлена");
     }
 
-    public void createEpic() {
-        System.out.println("Введите имя задачи");
-        String name = scanner.nextLine();
-        System.out.println("Введите описание задачи");
-        String description = scanner.nextLine();
+    public void createEpic(String name, String description) {
         Epic newEpic = new Epic(generateId(), name, description, status);
         tasks.put(newEpic.getId(), newEpic);
     }
 
-    public Task createSubtask(int parentId) {
-        System.out.println("Введите имя задачи");
-        String name = scanner.nextLine();
-        System.out.println("Введите описание задачи");
-        String description = scanner.nextLine();
-        Subtask newSubtask = new Subtask(generateId(), name, description, parentId, status);
-        Epic parentTask = (Epic) getTaskById(parentId);
+    public Task createSubtask(int id, String name, String description) {
+        Subtask newSubtask = new Subtask(generateId(), name, description, id, status);
+        Epic parentTask = (Epic) getTaskById(id);
         parentTask.addSubtask(newSubtask.getId());
         tasks.put(newSubtask.getId(), newSubtask);
         return newSubtask;
@@ -57,14 +41,10 @@ public class TaskManager {
         return tasks.get(id);
     }
 
-    public Task updateTask(int id) {
-        System.out.println("Введите наименование задачи:");
-        String newName = scanner.nextLine();
-        System.out.println("Введите описание задачи:");
-        String newDescription = scanner.nextLine();
+    public Task updateTask(int id, String name, String description) {
         Task needTask = getTaskById(id);
-        needTask.setName(newName);
-        needTask.setDescription(newDescription);
+        needTask.setName(name);
+        needTask.setDescription(description);
         System.out.println("Задача обновлена");
         return needTask;
     }

@@ -30,17 +30,22 @@ public class Main {
                     System.out.print("Введите тип задачи: ");
                     System.out.println("1-обычный, 2-эпик, 3-подзадача");
                     int type = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.println("Введите имя задачи");
+                    String name = scanner.nextLine();
+                    System.out.println("Введите описание задачи");
+                    String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            taskManager.createTask();
+                            taskManager.createTask(name, description);
                             break;
                         case 2:
-                            taskManager.createEpic();
+                            taskManager.createEpic(name, description);
                             break;
                         case 3:
                             System.out.println("Введите id эпик задачи");
-                            int parentId = scanner.nextInt();
-                            taskManager.createSubtask(parentId);
+                            int id = scanner.nextInt();
+                            taskManager.createSubtask(id, name, description);
                             break;
                     }
                     break;
@@ -56,7 +61,11 @@ public class Main {
                 case 4: {
                     System.out.println("Введите ID задачи:");
                     int id = scanner.nextInt();
-                    System.out.println(taskManager.updateTask(id));
+                    System.out.println("Введите новое имя задачи:");
+                    String name = scanner.nextLine();
+                    System.out.println("Введите новое описание задачи:");
+                    String description = scanner.nextLine();
+                    System.out.println(taskManager.updateTask(id, name, description));
                 }
                 case 5: {
                     taskManager.deleteTask();

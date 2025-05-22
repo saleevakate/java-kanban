@@ -5,7 +5,7 @@ public class Epic extends Task {
     private Set<Integer> subtasksId = new HashSet<>();
 
     public Epic(int id, String name, String description, TaskStatus taskStatus) {
-        super(id, name, description, taskStatus);
+        super(id, name, description, TaskStatus.NEW);
 
     }
 
