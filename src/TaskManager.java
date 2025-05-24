@@ -39,7 +39,7 @@ public class TaskManager {
         Epic parentTask = getEpicById(epicId);
         parentTask.addSubtask(newSubtask.getId());
         subtasks.put(newSubtask.getId(), newSubtask);
-        epics.containsValue(TaskStatus.NEW);
+        updateEpicStatus(epicId);
         return newSubtask;
     }
 
