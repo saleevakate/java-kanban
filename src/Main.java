@@ -37,18 +37,18 @@ public class Main {
                     String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            Task newTask = new Task(taskManager.generateId(), name, description, TaskStatus.NEW);
+                            Task newTask = new Task(TaskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(taskManager.generateId(), name, description, TaskStatus.NEW);
+                            Epic newEpic = new Epic(TaskManager.generateId(), name, description);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:
                             System.out.println("Введите id эпик задачи");
-                            int id = scanner.nextInt();
-                            Subtask newSubtask = new Subtask(taskManager.generateId(), name, description, id, TaskStatus.NEW);
-                            taskManager.createSubtask(newSubtask, id);
+                            int epicId = scanner.nextInt();
+                            Subtask newSubtask = new Subtask(TaskManager.generateId(), name, description, epicId, TaskStatus.NEW);
+                            taskManager.createSubtask(newSubtask, epicId);
                             break;
                     }
                     break;
@@ -76,6 +76,7 @@ public class Main {
                             System.out.println("Статус " + taskManager.getSubtaskById(id).getTaskStatus());
                             break;
                     }
+                    break;
                 }
                 case 4: {
                     System.out.print("Введите тип задачи: ");
@@ -120,23 +121,57 @@ public class Main {
                 case 6: {
                     System.out.println("Введите id задачи");
                     int id = scanner.nextInt();
-                    taskManager.deleteTaskToId(id);
+                    System.out.print("Введите тип задачи: ");
+                    System.out.println("1-обычный, 2-эпик, 3-подзадача");
+                    int type = scanner.nextInt();
+                    switch (type) {
+                        case 1:
+                            taskManager.deleteTaskById(id);
+                            break;
+                        case 2:
+                            taskManager.deleteEpicById(id);
+                            break;
+                        case 3:
+                            taskManager.deleteSubtaskById(id);
+                            break;
+                    }
                     break;
                 }
                 case 7: {
                     System.out.println("Введите id задачи");
                     int id = scanner.nextInt();
+                    System.out.print("Введите тип задачи: ");
+                    System.out.println("1-обычный, 2-эпик, 3-подзадача");
+                    int type = scanner.nextInt();
                     System.out.println("Введите новый статус 1-NEW, 2-IN_PROGRESS, 3-DONE");
                     int status = scanner.nextInt();
                     switch (status) {
                         case 1:
-                            taskManager.updateStatus(id, TaskStatus.NEW);
+                            if (type == 1) {
+                                taskManager.updateTaskStatus(id, TaskStatus.NEW);
+                            } else if (type == 2) {
+                                taskManager.updateEpicStatus(id);
+                            } else if (type == 3) {
+                                taskManager.updateSubtaskStatus(id, TaskStatus.NEW);
+                            }
                             break;
                         case 2:
-                            taskManager.updateStatus(id, TaskStatus.IN_PROGRESS);
+                            if (type == 1) {
+                                taskManager.updateTaskStatus(id, TaskStatus.IN_PROGRESS);
+                            } else if (type == 2) {
+                                taskManager.updateEpicStatus(id);
+                            } else if (type == 3) {
+                                taskManager.updateSubtaskStatus(id, TaskStatus.IN_PROGRESS);
+                            }
                             break;
                         case 3:
-                            taskManager.updateStatus(id, TaskStatus.DONE);
+                            if (type == 1) {
+                                taskManager.updateTaskStatus(id, TaskStatus.DONE);
+                            } else if (type == 2) {
+                                taskManager.updateEpicStatus(id);
+                            } else if (type == 3) {
+                                taskManager.updateSubtaskStatus(id, TaskStatus.DONE);
+                            }
                             break;
                     }
                     break;
