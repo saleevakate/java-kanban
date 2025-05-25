@@ -15,12 +15,15 @@ public class TaskManager {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
             System.out.println(task.getName());
+            System.out.println(task.getId());
         }
         for (Epic epic : epics.values()) {
             System.out.println(epic.getName());
+            System.out.println(epic.getId());
         }
         for (Subtask subtask : subtasks.values()) {
             System.out.println(subtask.getName());
+            System.out.println(subtask.getId());
         }
     }
 
@@ -86,23 +89,31 @@ public class TaskManager {
         updateEpicStatus(epicId);
     }
 
-    public void deleteTask() {
+    public void deleteTasks() {
         tasks.clear();
     }
 
-    public void deleteEpic() {
+    public void deleteEpics() {
         epics.clear();
+        subtasks.clear();
     }
 
-    public void deleteSubtask() {
+    public void deleteSubtasks() {
         subtasks.clear();
+        for (Epic epic : epics.values()) {
+            epic.setTaskStatus(TaskStatus.NEW);
+        }
     }
 
     public void deleteTaskById(int id) {
             tasks.remove(id);
     }
     public void deleteEpicById(int id) {
-            epics.remove(id);
+        Set<Integer> subtasksId = getSubtasksByEpicId(id);
+        epics.remove(id);
+        for (int subtaskId : subtasksId) {
+            subtasks.remove(subtaskId);
+        }
     }
 
     public void deleteSubtaskById(int id) {
@@ -168,7 +179,7 @@ public class TaskManager {
     }
 
 
-    public Set<Integer> getSubtasksById(int id) {
+    public Set<Integer> getSubtasksByEpicId(int id) {
         Epic epic = epics.get(id);
         if (epic != null) {
             return epic.getSubtasks();

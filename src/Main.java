@@ -114,10 +114,20 @@ public class Main {
                     break;
                 }
                 case 5: {
-                    taskManager.deleteTask();
-                    taskManager.deleteEpic();
-                    taskManager.deleteSubtask();
-                    System.out.println("Все задачи удалены");
+                    System.out.print("Введите тип задачи: ");
+                    System.out.println("1-обычный, 2-эпик, 3-подзадача");
+                    int type = scanner.nextInt();
+                    switch (type) {
+                        case 1:
+                        taskManager.deleteTasks();
+                        break;
+                        case 2:
+                        taskManager.deleteEpics();
+                        break;
+                        case 3:
+                        taskManager.deleteSubtasks();
+                        break;
+                    }
                     break;
                 }
                 case 6: {
@@ -181,7 +191,7 @@ public class Main {
                 case 8: {
                     System.out.println("Введите id задачи");
                     int id = scanner.nextInt();
-                    Set<Integer> subtasksId = taskManager.getSubtasksById(id);
+                    Set<Integer> subtasksId = taskManager.getSubtasksByEpicId(id);
                     for (int i : subtasksId) {
                         System.out.println(taskManager.getSubtaskById(i).getName());
                     }
