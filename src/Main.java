@@ -115,6 +115,8 @@ public class Main {
                 }
                 case 5: {
                     taskManager.deleteTask();
+                    taskManager.deleteEpic();
+                    taskManager.deleteSubtask();
                     System.out.println("Все задачи удалены");
                     break;
                 }

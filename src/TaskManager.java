@@ -27,7 +27,6 @@ public class TaskManager {
     public void createTask(Task newTask) {
         newTask.setId(generateId());
         tasks.put(newTask.getId(), newTask);
-        System.out.println("Задача добавлена");
     }
 
     public void createEpic(Epic newEpic) {
@@ -60,7 +59,7 @@ public class TaskManager {
         int id = task.getId();
         Task savedTask = tasks.get(id);
         if (savedTask == null) {
-            System.out.println("Такой задачи нет");
+            throw new IllegalArgumentException("Task с ID " + id + " не найден");
         }
         tasks.put(id, task);
     }
@@ -80,7 +79,7 @@ public class TaskManager {
         int id = subtask.getId();
         Subtask savedSubtask = subtasks.get(id);
         if (savedSubtask == null) {
-            System.out.println("Такой задачи нет");
+            throw new IllegalArgumentException("Subtask с ID " + id + " не найден");
         }
         subtasks.put(id, subtask);
         int epicId = subtask.getEpicId();
@@ -89,7 +88,13 @@ public class TaskManager {
 
     public void deleteTask() {
         tasks.clear();
+    }
+
+    public void deleteEpic() {
         epics.clear();
+    }
+
+    public void deleteSubtask() {
         subtasks.clear();
     }
 
@@ -142,6 +147,7 @@ public class TaskManager {
             }
             if (status == TaskStatus.IN_PROGRESS) {
                 hasInProgress = true;
+                break;
             }
         }
         if (allNew) {
