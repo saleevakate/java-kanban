@@ -15,15 +15,12 @@ public class TaskManager {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
             System.out.println(task.getName());
-            System.out.println(task.getId());
         }
         for (Epic epic : epics.values()) {
             System.out.println(epic.getName());
-            System.out.println(epic.getId());
         }
         for (Subtask subtask : subtasks.values()) {
             System.out.println(subtask.getName());
-            System.out.println(subtask.getId());
         }
     }
 
