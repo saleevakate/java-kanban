@@ -5,6 +5,7 @@ import Tasks.Subtask;
 import Tasks.Task;
 import Tasks.TaskStatus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -25,12 +26,15 @@ public class InMemoryTaskManager implements TaskManager {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
             System.out.println(task.getName());
+            System.out.println(task.getId());
         }
         for (Epic epic : epics.values()) {
             System.out.println(epic.getName());
+            System.out.println(epic.getId());
         }
         for (Subtask subtask : subtasks.values()) {
             System.out.println(subtask.getName());
+            System.out.println(subtask.getId());
         }
     }
 
@@ -60,20 +64,19 @@ public class InMemoryTaskManager implements TaskManager {
         Task task = tasks.get(id);
         historyManager.addTaskToHistory(task);
         return task;
-
     }
 
     @Override
     public Epic getEpicById(int id) {
         Epic epic = epics.get(id);
-        historyManager.addEpicToHistory(epic);
+        historyManager.addTaskToHistory(epic);
         return epic;
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
         Subtask subtask = subtasks.get(id);
-        historyManager.addSubtaskToHistory(subtask);
+        historyManager.addTaskToHistory(subtask);
         return subtask;
     }
 
@@ -218,6 +221,11 @@ public class InMemoryTaskManager implements TaskManager {
             return epic.getSubtasks();
         }
         return null;
+    }
+
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
 }

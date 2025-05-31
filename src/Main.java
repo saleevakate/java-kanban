@@ -7,6 +7,8 @@ import Tasks.Subtask;
 import Tasks.Task;
 import Tasks.TaskStatus;
 
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -72,19 +74,22 @@ public class Main {
                     int type = scanner.nextInt();
                     switch (type) {
                         case 1:
-                            System.out.println("Имя " + taskManager.getTaskById(id).getName());
-                            System.out.println("Описание " + taskManager.getTaskById(id).getDescription());
-                            System.out.println("Статус " + taskManager.getTaskById(id).getTaskStatus());
+                            Task task = taskManager.getTaskById(id);
+                            System.out.println("Имя " + task.getName());
+                            System.out.println("Описание " + task.getDescription());
+                            System.out.println("Статус " + task.getTaskStatus());
                             break;
                         case 2:
-                            System.out.println("Имя " + taskManager.getEpicById(id).getName());
-                            System.out.println("Описание " + taskManager.getEpicById(id).getDescription());
-                            System.out.println("Статус " + taskManager.getEpicById(id).getTaskStatus());
+                            Epic epic = taskManager.getEpicById(id);
+                            System.out.println("Имя " + epic.getName());
+                            System.out.println("Описание " + epic.getDescription());
+                            System.out.println("Статус " + epic.getTaskStatus());
                             break;
                         case 3:
-                            System.out.println("Имя " + taskManager.getSubtaskById(id).getName());
-                            System.out.println("Описание " + taskManager.getSubtaskById(id).getDescription());
-                            System.out.println("Статус " + taskManager.getSubtaskById(id).getTaskStatus());
+                            Subtask subtask = taskManager.getSubtaskById(id);
+                            System.out.println("Имя " + subtask.getName());
+                            System.out.println("Описание " + subtask.getDescription());
+                            System.out.println("Статус " + subtask.getTaskStatus());
                             break;
                     }
                     break;
@@ -209,7 +214,10 @@ public class Main {
                     break;
                 }
                 case 9: {
-                    historyManager.getHistory();
+                    List<Task> tasksList = taskManager.getHistory();
+                    for (Task task : tasksList) {
+                        System.out.println(task.getName());
+                    }
                 }
 
             }

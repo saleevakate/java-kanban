@@ -8,12 +8,7 @@ import java.util.List;
 
 public interface HistoryManager {
 
-    List<Task> getHistory();
+    List<Task>  getHistory();
 
-    void addTaskToHistory(Task task);
-
-    void addEpicToHistory(Epic epic);
-
-    void addSubtaskToHistory(Subtask subtask);
-
+    <T extends Task> void addTaskToHistory(T task);
 }
