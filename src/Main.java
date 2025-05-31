@@ -1,11 +1,21 @@
+import Manager.HistoryManager;
+import Manager.InMemoryTaskManager;
+import Manager.Managers;
+import Manager.TaskManager;
+import Tasks.Epic;
+import Tasks.Subtask;
+import Tasks.Task;
+import Tasks.TaskStatus;
+
 import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
+        HistoryManager historyManager = Managers.getDefaultHistory();
 
 
         while (true) {
@@ -18,6 +28,7 @@ public class Main {
             System.out.println("6-удалить задачу по id");
             System.out.println("7-изменить статус задачи");
             System.out.println("8-список подзадач для эпика");
+            System.out.println("9-получить историю поиска задач");
 
             int command = scanner.nextInt();
 
@@ -37,17 +48,17 @@ public class Main {
                     String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            Task newTask = new Task(TaskManager.generateId(), name, description, TaskStatus.NEW);
+                            Task newTask = new Task(InMemoryTaskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(TaskManager.generateId(), name, description);
+                            Epic newEpic = new Epic(InMemoryTaskManager.generateId(), name, description);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:
                             System.out.println("Введите id эпик задачи");
                             int epicId = scanner.nextInt();
-                            Subtask newSubtask = new Subtask(TaskManager.generateId(), name, description, epicId, TaskStatus.NEW);
+                            Subtask newSubtask = new Subtask(InMemoryTaskManager.generateId(), name, description, epicId, TaskStatus.NEW);
                             taskManager.createSubtask(newSubtask, epicId);
                             break;
                     }
@@ -197,6 +208,10 @@ public class Main {
                     }
                     break;
                 }
+                case 9: {
+                    historyManager.getHistory();
+                }
+
             }
         }
     }
