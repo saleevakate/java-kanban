@@ -17,7 +17,6 @@ public class Main {
     public static void main(String[] args) {
         TaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
-        HistoryManager historyManager = Managers.getDefaultHistory();
 
 
         while (true) {

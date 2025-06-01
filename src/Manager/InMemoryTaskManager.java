@@ -5,7 +5,6 @@ import Tasks.Subtask;
 import Tasks.Task;
 import Tasks.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -40,23 +39,27 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task newTask) {
-        newTask.setId(generateId());
         tasks.put(newTask.getId(), newTask);
     }
 
     @Override
     public void createEpic(Epic newEpic) {
-        newEpic.setId(generateId());
         epics.put(newEpic.getId(), newEpic);
     }
 
     @Override
-    public Subtask createSubtask(Subtask newSubtask, int epicId) {
+    public Subtask createSubtask(Subtask subtask, int epicId) {
         Epic parentTask = getEpicById(epicId);
-        parentTask.addSubtask(newSubtask.getId());
-        subtasks.put(newSubtask.getId(), newSubtask);
+        if (parentTask == null) {
+            throw new IllegalArgumentException("Такого эпика нет");
+        }
+        if (subtask.getEpicId() == subtask.getId()) {
+            throw new IllegalArgumentException("Подзадача не может быть своим же эпиком");
+        }
+        parentTask.addSubtask(subtask.getId());
+        subtasks.put(subtask.getId(), subtask);
         updateEpicStatus(epicId);
-        return newSubtask;
+        return subtask;
     }
 
     @Override
@@ -223,7 +226,7 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
-
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface TaskManager {
+
     void getTasks();
 
     void createTask(Task newTask);
