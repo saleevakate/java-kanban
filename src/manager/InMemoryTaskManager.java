@@ -1,50 +1,36 @@
-package Manager;
+package manager;
 
-import Tasks.Epic;
-import Tasks.Subtask;
-import Tasks.Task;
-import Tasks.TaskStatus;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.TaskStatus;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
-    private static int idCounter = 0;
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    private int idCounter = 0;
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public static int generateId() {
+    private int generateId() {
         return idCounter++;
     }
 
     @Override
-    public void getTasks() {
-        System.out.println("Список всех задач:");
-        for (Task task : tasks.values()) {
-            System.out.println(task.getName());
-            System.out.println(task.getId());
-        }
-        for (Epic epic : epics.values()) {
-            System.out.println(epic.getName());
-            System.out.println(epic.getId());
-        }
-        for (Subtask subtask : subtasks.values()) {
-            System.out.println(subtask.getName());
-            System.out.println(subtask.getId());
-        }
+    public void createTask(Task task) {
+        task.setId(generateId());
+        tasks.put(task.getId(), task);
     }
 
     @Override
-    public void createTask(Task newTask) {
-        tasks.put(newTask.getId(), newTask);
-    }
-
-    @Override
-    public void createEpic(Epic newEpic) {
-        epics.put(newEpic.getId(), newEpic);
+    public void createEpic(Epic epic) {
+        epic.setId(generateId());
+        epics.put(epic.getId(), epic);
     }
 
     @Override

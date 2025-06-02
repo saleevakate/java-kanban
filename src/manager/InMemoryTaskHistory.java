@@ -1,6 +1,6 @@
-package Manager;
+package manager;
 
-import Tasks.Task;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +11,14 @@ public class InMemoryTaskHistory implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        return tasksHistory;
+        return new ArrayList<>(tasksHistory);
     }
 
     @Override
-    public <T extends Task> void addTaskToHistory(T task) {
+    public void addTaskToHistory(Task task) {
         if (tasksHistory.size() == 10) {
             tasksHistory.remove(0);
-            tasksHistory.add(task);
-        } else {
-            tasksHistory.add(task);
         }
+        tasksHistory.add(task);
     }
 }

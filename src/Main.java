@@ -1,13 +1,10 @@
-import Manager.HistoryManager;
-import Manager.InMemoryTaskManager;
-import Manager.Managers;
-import Manager.TaskManager;
-import Tasks.Epic;
-import Tasks.Subtask;
-import Tasks.Task;
-import Tasks.TaskStatus;
+import manager.Managers;
+import manager.TaskManager;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.TaskStatus;
 
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -35,7 +32,6 @@ public class Main {
 
             switch (command) {
                 case 1: {
-                    taskManager.getTasks();
                     break;
                 }
                 case 2: {
@@ -49,17 +45,17 @@ public class Main {
                     String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            Task newTask = new Task(InMemoryTaskManager.generateId(), name, description, TaskStatus.NEW);
+                            Task newTask = new Task(0, name, description, TaskStatus.NEW);
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(InMemoryTaskManager.generateId(), name, description);
+                            Epic newEpic = new Epic(0, name, description);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:
                             System.out.println("Введите id эпик задачи");
                             int epicId = scanner.nextInt();
-                            Subtask newSubtask = new Subtask(InMemoryTaskManager.generateId(), name, description, epicId, TaskStatus.NEW);
+                            Subtask newSubtask = new Subtask(0, name, description, epicId, TaskStatus.NEW);
                             taskManager.createSubtask(newSubtask, epicId);
                             break;
                     }
