@@ -17,7 +17,7 @@ public class Main {
 
 
         while (true) {
-            System.out.println("Поехали!");
+            System.out.println("Привет!");
             System.out.println("1-список всех задач");
             System.out.println("2-создать задачу");
             System.out.println("3-получить задачу по id");
