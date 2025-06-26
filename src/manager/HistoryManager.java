@@ -1,12 +1,26 @@
 package manager;
 
+import tasks.Epic;
+import tasks.Subtask;
 import tasks.Task;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface HistoryManager {
 
-    List<Task>  getHistory();
+    ArrayList<Task> getHistory();
 
-    void addTaskToHistory(Task task);
+    void addTask(Task task);
+
+    void addEpic(Epic epic);
+
+    void addSubtask(Subtask subtask);
+
+    void removeTask(Task task);
+
+    void removeEpic(Epic epic);
+
+    void removeSubtask(Subtask subtask);
+
+    void removeNode(int id);
 }
