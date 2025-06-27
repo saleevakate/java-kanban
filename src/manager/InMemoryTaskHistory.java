@@ -1,7 +1,5 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ public class InMemoryTaskHistory implements HistoryManager {
     public ArrayList<Task> getHistory() {
         ArrayList<Task> historyList = new ArrayList<>();
         if (first == null) {
-            System.out.println("Нет просмотренных задач");
+            return historyList;
         }
         Node node = first;
         while (node != null) {
@@ -28,31 +26,18 @@ public class InMemoryTaskHistory implements HistoryManager {
     }
 
     @Override
-    public void addTask(Task task) {
-        removeNode(task.getId());
+    public void add(Task task) {
+        remove(task.getId());
         linkLast(task);
         nodes.put(task.getId(), last);
     }
 
-    @Override
-    public void addEpic(Epic epic) {
-        removeNode(epic.getId());
-        linkLast(epic);
-        nodes.put(epic.getId(), last);
-    }
-
-    @Override
-    public void addSubtask(Subtask subtask) {
-        removeNode(subtask.getId());
-        linkLast(subtask);
-        nodes.put(subtask.getId(), last);
-    }
-
-    public void removeNode(int id) {
+    public void remove(int id) {
         Node node = nodes.get(id);
         if (node == null) {
             return;
-        } else if (node == first && node == last) {
+        }
+        if (node == first && node == last) {
             nodes.remove(id, node);
             first = null;
             last = null;
@@ -71,21 +56,6 @@ public class InMemoryTaskHistory implements HistoryManager {
         }
     }
 
-    @Override
-    public void removeTask(Task task) {
-        removeNode(task.getId());
-    }
-
-    @Override
-    public void removeEpic(Epic epic) {
-        removeNode(epic.getId());
-    }
-
-    @Override
-    public void removeSubtask(Subtask subtask) {
-        removeNode(subtask.getId());
-    }
-
     private void linkLast(Task task) {
         Node node = new Node(task, last, null);
         if (first == null) {
@@ -94,5 +64,25 @@ public class InMemoryTaskHistory implements HistoryManager {
             last.next = node;
         }
         last = node;
+    }
+
+    public static class Node {
+        Task value;
+        Node prev;
+        Node next;
+
+        public Node(Task value, Node prev, Node next) {
+            this.value = value;
+            this.prev = prev;
+            this.next = next;
+        }
+
+        public void setPrev(Node prev) {
+            this.prev = prev;
+        }
+
+        public void setNext(Node next) {
+            this.next = next;
+        }
     }
 }
