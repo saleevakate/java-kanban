@@ -10,14 +10,15 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskHistoryTest {
     TaskManager taskManager = Managers.getDefaultManager();
+    HistoryManager historyManager = Managers.getDefaultHistory();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+
 
     Task task;
     Epic epic;
@@ -29,7 +30,7 @@ public class InMemoryTaskHistoryTest {
         taskManager.createTask(task);
         epic = new Epic(1, "Эпик", "Описание");
         taskManager.createEpic(epic);
-        subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW);
+        subtask = new Subtask(2, "Сабтаск", "Описание", 1, TaskStatus.NEW);
         taskManager.createSubtask(subtask, 1);
     }
 
@@ -42,7 +43,11 @@ public class InMemoryTaskHistoryTest {
 
     @Test
     public void testGetHistory() {
+        taskManager.getTaskById(0);
+        taskManager.getEpicById(1);
+        taskManager.getSubtaskById(2);
         assertFalse(taskManager.getHistory().isEmpty());
         assertTrue(taskManager.getHistory().size() == 3);
     }
+
 }

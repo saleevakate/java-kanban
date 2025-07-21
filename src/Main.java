@@ -17,7 +17,7 @@ public class Main {
 
 
         while (true) {
-            System.out.println("Поехали!");
+            System.out.println("Привет!");
             System.out.println("1-список всех задач");
             System.out.println("2-создать задачу");
             System.out.println("3-получить задачу по id");
@@ -32,6 +32,7 @@ public class Main {
 
             switch (command) {
                 case 1: {
+                    taskManager.getTasks();
                     break;
                 }
                 case 2: {
@@ -55,7 +56,7 @@ public class Main {
                         case 3:
                             System.out.println("Введите id эпик задачи");
                             int epicId = scanner.nextInt();
-                            Subtask newSubtask = new Subtask(0, name, description, epicId, TaskStatus.NEW);
+                            Subtask newSubtask = new Subtask(taskManager.generateId(), name, description, epicId, TaskStatus.NEW);
                             taskManager.createSubtask(newSubtask, epicId);
                             break;
                     }
@@ -130,14 +131,14 @@ public class Main {
                     int type = scanner.nextInt();
                     switch (type) {
                         case 1:
-                        taskManager.deleteTasks();
-                        break;
+                            taskManager.deleteTasks();
+                            break;
                         case 2:
-                        taskManager.deleteEpics();
-                        break;
+                            taskManager.deleteEpics();
+                            break;
                         case 3:
-                        taskManager.deleteSubtasks();
-                        break;
+                            taskManager.deleteSubtasks();
+                            break;
                     }
                     break;
                 }

@@ -10,6 +10,10 @@ import java.util.Set;
 
 public interface TaskManager {
 
+    int generateId();
+
+    void getTasks();
+
     void createTask(Task newTask);
 
     void createEpic(Epic newEpic);
