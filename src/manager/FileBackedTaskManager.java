@@ -32,17 +32,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write(CSVFormatter.getHeader());
             writer.newLine();
             CSVFormatter.toStringTask(tasks);
-            writer.newLine();
             CSVFormatter.toStringEpic(epics);
-            writer.newLine();
             CSVFormatter.toStringSubtask(subtasks);
             writer.newLine();
-            // 3. Пишем историю
-            writer.write(CSVFormatter.toStringHistory(historyManaёger.getHistory()));
+            writer.write(CSVFormatter.toStringHistory(historyManager.getHistory()));
             writer.newLine();
 
         } catch (IOException e) {
-            // Выбросить собственное исключение
+            throw new ManagerSaveException("Ошибка при сохранении файла", e);
         }
     }
 

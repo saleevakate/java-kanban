@@ -51,8 +51,18 @@ public class CSVFormatter {
 
     public static String toStringHistory(List<Task> tasksHistory) {
         // Превратить историю в csv строку
+        StringBuilder builder = new StringBuilder();
+        for (Task task : tasksHistory) {
+            builder.append(task.getId()).append(",");
+            builder.append(task.getClass()).append(",");
+            builder.append(task.getName()).append(",");
+            builder.append(task.getDescription()).append(".");
+        }
+        return builder.toString();
+    }
 
-        return "";
+    public static Task fromString(String line) {
+
     }
 
 }
