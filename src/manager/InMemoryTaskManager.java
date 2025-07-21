@@ -50,7 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask, int epicId) {
+    public void createSubtask(Subtask subtask, int epicId) {
         Epic parentTask = getEpicById(epicId);
         if (parentTask == null) {
             throw new IllegalArgumentException("Такого эпика нет");
@@ -61,7 +61,6 @@ public class InMemoryTaskManager implements TaskManager {
         parentTask.addSubtask(subtask.getId());
         subtasks.put(subtask.getId(), subtask);
         updateEpicStatus(epicId);
-        return subtask;
     }
 
     @Override

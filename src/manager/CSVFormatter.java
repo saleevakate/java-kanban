@@ -5,64 +5,52 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.List;
-import java.util.Map;
 
 public class CSVFormatter {
 
     public static String getHeader() {
-        return "Id,type,name,status,description,id epic/subtask";
+        return "id,type,name,status,description,epic";
     }
 
-    public static String toStringTask(Map<Integer, Task> tasks) {
-        // Превратить таску в csv строку
+    public static String toString(Task task) {
         StringBuilder builder = new StringBuilder();
-        for (Task task : tasks.values()) {
-            builder.append(task.getId()).append(",");
-            builder.append(task.getClass()).append(",");
-            builder.append(task.getName()).append(",");
-            builder.append(task.getDescription()).append(".");
+        builder.append(task.getId()).append(",");
+
+        if (task instanceof Epic epic) {
+            builder.append(TaskType.EPIC).append(",");
+        } else if (task instanceof Subtask subtask) {
+            builder.append(TaskType.SUBTASK).append(",");
+        } else {
+            builder.append(TaskType.TASK).append(",");
+        }
+        builder.append(task.getName()).append(",");
+        builder.append(task.getTaskStatus()).append(",");
+        builder.append(task.getDescription()).append(",");
+        if (task instanceof Subtask subtask) {
+            builder.append(subtask.getEpicId());
         }
         return builder.toString();
     }
 
-    public static String toStringEpic(Map<Integer, Epic> epics) {
-        StringBuilder builder = new StringBuilder();
-        for (Epic epic : epics.values()) {
-            builder.append(epic.getId()).append(",");
-            builder.append(epic.getClass()).append(",");
-            builder.append(epic.getName()).append(",");
-            builder.append(epic.getDescription()).append(",");
-            builder.append(epic.getSubtasks()).append(".");
-        }
-        return builder.toString();
+    /*public static Task fromString(String value) {
+
+        return ;
     }
 
-    public static String toStringSubtask(Map<Integer, Subtask> subtasks) {
-        StringBuilder builder = new StringBuilder();
-        for (Subtask subtask : subtasks.values()) {
-            builder.append(subtask.getId()).append(",");
-            builder.append(subtask.getClass()).append(",");
-            builder.append(subtask.getName()).append(",");
-            builder.append(subtask.getDescription()).append(",");
-            builder.append(subtask.getEpicId()).append(".");
-        }
-        return builder.toString();
-    }
+     */
 
-    public static String toStringHistory(List<Task> tasksHistory) {
+    /*public static String toStringHistory(List<Task> tasksHistory) {
         // Превратить историю в csv строку
         StringBuilder builder = new StringBuilder();
         for (Task task : tasksHistory) {
             builder.append(task.getId()).append(",");
-            builder.append(task.getClass()).append(",");
             builder.append(task.getName()).append(",");
-            builder.append(task.getDescription()).append(".");
+            builder.append(task.getDescription());
+
         }
         return builder.toString();
     }
 
-    public static Task fromString(String line) {
-
-    }
+     */
 
 }

@@ -32,7 +32,6 @@ public class Main {
 
             switch (command) {
                 case 1: {
-                    taskManager.getTasks();
                     break;
                 }
                 case 2: {
