@@ -16,9 +16,9 @@ public class CSVFormatter {
         StringBuilder builder = new StringBuilder();
         builder.append(task.getId()).append(",");
 
-        if (task instanceof Epic epic) {
+        if (task instanceof Epic) {
             builder.append(TaskType.EPIC).append(",");
-        } else if (task instanceof Subtask subtask) {
+        } else if (task instanceof Subtask) {
             builder.append(TaskType.SUBTASK).append(",");
         } else {
             builder.append(TaskType.TASK).append(",");
@@ -36,21 +36,6 @@ public class CSVFormatter {
 
         return ;
     }
-
-     */
-
-    /*public static String toStringHistory(List<Task> tasksHistory) {
-        // Превратить историю в csv строку
-        StringBuilder builder = new StringBuilder();
-        for (Task task : tasksHistory) {
-            builder.append(task.getId()).append(",");
-            builder.append(task.getName()).append(",");
-            builder.append(task.getDescription());
-
-        }
-        return builder.toString();
-    }
-
      */
 
 }
