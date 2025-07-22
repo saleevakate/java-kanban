@@ -33,7 +33,6 @@ public class Main {
 
             switch (command) {
                 case 1: {
-                    taskManager.
                     break;
                 }
                 case 2: {
