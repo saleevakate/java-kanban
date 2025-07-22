@@ -49,7 +49,7 @@ public class Main {
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(0, name, description);
+                            Epic newEpic = new Epic(0, name, description, TaskStatus.NEW);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:

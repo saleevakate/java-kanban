@@ -28,7 +28,7 @@ public class InMemoryTaskManagerTest {
         taskManager = Managers.getDefaultManager();
         task = new Task(0, "Имя", "Описание", TaskStatus.NEW);
         taskManager.createTask(task);
-        epic = new Epic(1, "Эпик", "Описание");
+        epic = new Epic(1, "Эпик", "Описание", TaskStatus.NEW);
         taskManager.createEpic(epic);
         subtask = new Subtask(2, "Сабтаск", "Описание", 1, TaskStatus.NEW);
         taskManager.createSubtask(subtask, 1);
@@ -91,7 +91,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateEpic() {
-        Epic newEpic = new Epic(1, "Эпик10", "Описание10");
+        Epic newEpic = new Epic(1, "Эпик10", "Описание10", TaskStatus.NEW);
         taskManager.updateEpic(newEpic);
         assertEquals("Эпик10", taskManager.getEpicById(1).getName());
     }

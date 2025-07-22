@@ -20,9 +20,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
-            writer.write(CSVFormatter.getHeader());
+            writer.write("id,type,name,status,description,epic");
             writer.newLine();
-
             for (Task task : tasks.values()) {
                 writer.write(CSVFormatter.toString(task));
                 writer.newLine();
@@ -31,10 +30,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(CSVFormatter.toString(epic));
                 writer.newLine();
             }
-            for (Subtask subtask: subtasks.values()) {
+            for (Subtask subtask : subtasks.values()) {
                 writer.write(CSVFormatter.toString(subtask));
                 writer.newLine();
             }
+            writer.newLine();
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении файла", e);
         }
@@ -42,10 +42,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(savedTasksFile);
-        try {
-            // Наполняем задачами
-            Files.readString(savedTasksFile.toPath());
-            // Восстанавливаем историю
+
+        try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                CSVFormatter.fromString(line);
+            }
+
 
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);
