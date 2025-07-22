@@ -49,7 +49,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 CSVFormatter.fromString(line);
             }
 
-
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);
         }
