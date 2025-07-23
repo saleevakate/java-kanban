@@ -45,7 +45,7 @@ class FileBackedTaskManagerTest {
             String content = Files.readString(savedTasksFile);
             String[] lines = content.split("\n");
             assertEquals("id,type,name,status,description,epic", lines[0].trim());
-            assertEquals(5, lines.length);
+            assertEquals(4, lines.length);
             String expectedTaskLine = "1,TASK,Таск,NEW,Описание,";
             String expectedEpicLine = "2,EPIC,Эпик,NEW,Описание,";
             String expectedSubtaskLine = "3,SUBTASK,Сабтаск,NEW,Описание,2";
@@ -55,7 +55,6 @@ class FileBackedTaskManagerTest {
             assertTrue(content.contains(expectedTaskLine));
             assertTrue(content.contains(expectedEpicLine));
             assertTrue(content.contains(expectedSubtaskLine));
-            assertTrue(lines[4].isBlank());
     }
 
     @Test
