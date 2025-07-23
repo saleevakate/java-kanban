@@ -1,9 +1,6 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+import tasks.*;
 
 public class CSVFormatter {
     static TaskManager taskManager = Managers.getDefaultManager();
