@@ -10,6 +10,8 @@ import java.util.Set;
 
 public interface TaskManager {
 
+    void getTasks();
+
     int generateId();
 
     void createTask(Task newTask);
@@ -51,4 +53,5 @@ public interface TaskManager {
     Set<Integer> getSubtasksByEpicId(int id);
 
     List<Task> getHistory();
+
 }

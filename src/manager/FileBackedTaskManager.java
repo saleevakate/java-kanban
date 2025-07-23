@@ -7,7 +7,9 @@ import tasks.TaskStatus;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -18,20 +20,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.savedTasksFile = savedTasksFile;
     }
 
-    private void save() {
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
             for (Task task : tasks.values()) {
-                writer.write(CSVFormatter.toStringTask(task));
+                writer.write(CSVFormatter.toString(task));
                 writer.newLine();
             }
             for (Epic epic : epics.values()) {
-                writer.write(CSVFormatter.toStringEpic(epic));
+                writer.write(CSVFormatter.toString(epic));
                 writer.newLine();
             }
             for (Subtask subtask : subtasks.values()) {
-                writer.write(CSVFormatter.toStringSubtask(subtask));
+                writer.write(CSVFormatter.toString(subtask));
                 writer.newLine();
             }
             writer.newLine();
@@ -41,17 +43,63 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(savedTasksFile);
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
             bufferedReader.readLine();
-            String line = bufferedReader.readLine();
-            while (line != null && line.isEmpty()) {
-                CSVFormatter.fromString(line);
+            Map<Integer, Task> tasks = new HashMap<>();
+            Map<Integer, Epic> epics = new HashMap<>();
+            Map<Integer, Subtask> subtasks = new HashMap<>();
+            int maxId = 0;
+            String line;
+            while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
+                Object obj = CSVFormatter.fromString(line);
+                if (obj != null) {
+                    if (obj instanceof Subtask) {
+                        Subtask subtask = (Subtask) obj;
+                        if (subtask.getId() > maxId) {
+                            maxId = subtask.getId();
+                        }
+                        subtasks.put(subtask.getId(), subtask);
+                    } else if (obj instanceof Epic) {
+                        Epic epic = (Epic) obj;
+                        if (epic.getId() > maxId) {
+                            maxId = epic.getId();
+                        }
+                        epics.put(epic.getId(), epic);
+                    } else if (obj instanceof Task) {
+                        Task task = (Task) obj;
+                        if (task.getId() > maxId) {
+                            maxId = task.getId();
+                        }
+                        tasks.put(task.getId(), task);
+                    }
+                }
             }
+            for (Subtask subtask : subtasks.values()) {
+                Epic parentEpic = epics.get(subtask.getEpicId());
+                if (parentEpic != null) {
+                    parentEpic.addSubtask(subtask.getId());
+                }
+            }
+            FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
+            InMemoryTaskManager.tasks = tasks;
+            InMemoryTaskManager.epics = epics;
+            InMemoryTaskManager.subtasks = subtasks;
+            InMemoryTaskManager.idCounter = maxId;
+            return manager;
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);
         }
-        return taskManager;
+    }
+
+    @Override
+    public int generateId() {
+        super.generateId();
+        return idCounter;
+    }
+
+    @Override
+    public void getTasks() {
+        super.getTasks();
     }
 
     @Override

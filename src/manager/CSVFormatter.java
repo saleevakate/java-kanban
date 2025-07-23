@@ -8,88 +8,72 @@ import tasks.TaskStatus;
 public class CSVFormatter {
     static TaskManager taskManager = Managers.getDefaultManager();
 
-    public static String toStringTask(Task task) {
+    public static String toString(Task task) {
         StringBuilder builder = new StringBuilder();
+        TaskType type = null;
+        if (task instanceof Epic) {
+            type = TaskType.EPIC;
+        } else if (task instanceof Subtask) {
+            type = TaskType.SUBTASK;
+        } else {
+            type = TaskType.TASK;
+        }
         builder.append(task.getId()).append(",");
-        builder.append(TaskType.TASK).append(",");
+        builder.append(type).append(",");
         builder.append(task.getName()).append(",");
         builder.append(task.getTaskStatus()).append(",");
         builder.append(task.getDescription()).append(",");
-
-        return builder.toString();
-    }
-
-    public static String toStringEpic(Epic epic) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(epic.getId()).append(",");
-        builder.append(TaskType.EPIC).append(",");
-        builder.append(epic.getName()).append(",");
-        builder.append(epic.getTaskStatus()).append(",");
-        builder.append(epic.getDescription()).append(",");
-
-        return builder.toString();
-    }
-
-    public static String toStringSubtask(Subtask subtask) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(subtask.getId()).append(",");
-        builder.append(TaskType.SUBTASK).append(",");
-        builder.append(subtask.getName()).append(",");
-        builder.append(subtask.getTaskStatus()).append(",");
-        builder.append(subtask.getDescription()).append(",");
-        builder.append(subtask.getEpicId());
-
-        return builder.toString();
-    }
-
-    public static void fromString(String line) {
-        String[] parts = line.split(",");
-
-        String statusStr = parts[3];
-        TaskStatus status = null;
-        switch (statusStr) {
-            case "NEW":
-                status = TaskStatus.NEW;
-                break;
-            case "IN_PROGRESS":
-                status = TaskStatus.IN_PROGRESS;
-                break;
-            case "DONE":
-                status = TaskStatus.DONE;
-                break;
+        if (task instanceof Subtask subtask) {
+            builder.append(subtask.getEpicId());
         }
 
-        String type = parts[1];
+        return builder.toString();
+    }
+
+    public static Object fromString(String line) {
+        if (line == null || line.trim().isEmpty()) {
+            return null;
+        }
+        String[] parts = line.split(",");
+
+        String statusStr = parts[3].trim();
+        TaskStatus status = null;
+        switch (statusStr) {
+            case "NEW": status = TaskStatus.NEW; break;
+            case "IN_PROGRESS": status = TaskStatus.IN_PROGRESS; break;
+            case "DONE": status = TaskStatus.DONE; break;
+        }
+
+        String type = parts[1].trim();
+        Object task = null;
         switch (type) {
             case "TASK": {
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[2];
-                String description = parts[4];
-                Task task = new Task(id, name, description, status);
-                taskManager.createTask(task);
+                int id = Integer.parseInt(parts[0].trim());
+                String name = parts[2].trim();
+                String description = parts[4].trim();
+                task = new Task(id, name, description, status);
                 break;
             }
             case "EPIC": {
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[2];
-                String description = parts[4];
-                Epic epic = new Epic(id, name, description, status);
-                taskManager.createEpic(epic);
+                int id = Integer.parseInt(parts[0].trim());
+                String name = parts[2].trim();
+                String description = parts[4].trim();
+                task = new Epic(id, name, description, status);
                 break;
             }
             case "SUBTASK": {
                 if (parts.length < 6) {
                     throw new IllegalArgumentException("Неверный формат строки для Subtask");
                 }
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[2];
-                String description = parts[4];
-                int epicId = Integer.parseInt(parts[5]);
-                Subtask subtask = new Subtask(id, name, description, epicId, status);
-                taskManager.createSubtask(subtask, epicId);
+                int id = Integer.parseInt(parts[0].trim());
+                String name = parts[2].trim();
+                String description = parts[4].trim();
+                int epicId = Integer.parseInt(parts[5].trim());
+                task = new Subtask(id, name, description, epicId, status);
                 break;
             }
         }
+        return task;
     }
 
 

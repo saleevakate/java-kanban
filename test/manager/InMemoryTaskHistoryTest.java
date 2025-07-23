@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskHistoryTest {
     TaskManager taskManager = Managers.getDefaultManager();
-    HistoryManager historyManager = Managers.getDefaultHistory();
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
@@ -26,12 +25,12 @@ public class InMemoryTaskHistoryTest {
 
     @BeforeEach
     public void setUp() {
-        task = new Task(0, "Имя", "Описание", TaskStatus.NEW);
+        task = new Task(1, "Имя", "Описание", TaskStatus.NEW);
         taskManager.createTask(task);
-        epic = new Epic(1, "Эпик", "Описание", TaskStatus.NEW);
+        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW);
         taskManager.createEpic(epic);
-        subtask = new Subtask(2, "Сабтаск", "Описание", 1, TaskStatus.NEW);
-        taskManager.createSubtask(subtask, 1);
+        subtask = new Subtask(3, "Сабтаск", "Описание", 1, TaskStatus.NEW);
+        taskManager.createSubtask(subtask, 2);
     }
 
     @AfterEach
@@ -43,9 +42,9 @@ public class InMemoryTaskHistoryTest {
 
     @Test
     public void testGetHistory() {
-        taskManager.getTaskById(0);
-        taskManager.getEpicById(1);
-        taskManager.getSubtaskById(2);
+        taskManager.getTaskById(1);
+        taskManager.getEpicById(2);
+        taskManager.getSubtaskById(3);
         assertFalse(taskManager.getHistory().isEmpty());
         assertTrue(taskManager.getHistory().size() == 3);
     }

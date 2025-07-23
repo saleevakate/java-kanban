@@ -15,7 +15,7 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = Managers.getDefaultManager();
+        FileBackedTaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
         File file = new File("resources/data.csv");
         FileBackedTaskManager.loadFromFile(file);
@@ -35,6 +35,7 @@ public class Main {
 
             switch (command) {
                 case 1: {
+                    taskManager.getTasks();
                     break;
                 }
                 case 2: {
@@ -48,11 +49,11 @@ public class Main {
                     String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            Task newTask = new Task(0, name, description, TaskStatus.NEW);
+                            Task newTask = new Task(taskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(0, name, description, TaskStatus.NEW);
+                            Epic newEpic = new Epic(taskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:
