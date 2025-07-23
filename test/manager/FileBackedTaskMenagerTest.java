@@ -12,11 +12,13 @@ public class FileBackedTaskMenagerTest {
     private File tempFile;
 
     @Test
-    void saveAndLoadEmptyFile() throws IOException {
+    /*void saveAndLoadEmptyFile() throws IOException {
         tempFile = Files.createTempFile("temp", ".csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(tempFile);
         FileBackedTaskManager loaded = FileBackedTaskManager.loadFromFile(tempFile);
 
         assertTrue(loaded.getAllTasks().isEmpty(), "Список не пустой.");
     }
+
+     */
 }

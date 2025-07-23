@@ -45,7 +45,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
             bufferedReader.readLine();
             String line = bufferedReader.readLine();
-            while (line != null) {
+            while (line != null && line.isEmpty()) {
                 CSVFormatter.fromString(line);
             }
         } catch (IOException e) {
