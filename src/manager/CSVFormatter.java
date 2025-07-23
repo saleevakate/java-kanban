@@ -6,6 +6,7 @@ import tasks.Task;
 import tasks.TaskStatus;
 
 public class CSVFormatter {
+    static TaskManager taskManager = Managers.getDefaultManager();
 
     public static String toStringTask(Task task) {
         StringBuilder builder = new StringBuilder();
@@ -42,7 +43,6 @@ public class CSVFormatter {
     }
 
     public static void fromString(String line) {
-        TaskManager taskManager = Managers.getDefaultManager();
         String[] parts = line.split(",");
 
         String statusStr = parts[3];
