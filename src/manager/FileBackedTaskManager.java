@@ -23,15 +23,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write("id,type,name,status,description,epic");
             writer.newLine();
             for (Task task : tasks.values()) {
-                writer.write(CSVFormatter.toString(task));
+                writer.write(CSVFormatter.toStringTask(task));
                 writer.newLine();
             }
             for (Epic epic : epics.values()) {
-                writer.write(CSVFormatter.toString(epic));
+                writer.write(CSVFormatter.toStringEpic(epic));
                 writer.newLine();
             }
             for (Subtask subtask : subtasks.values()) {
-                writer.write(CSVFormatter.toString(subtask));
+                writer.write(CSVFormatter.toStringSubtask(subtask));
                 writer.newLine();
             }
             writer.newLine();
@@ -42,13 +42,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
         FileBackedTaskManager taskManager = new FileBackedTaskManager(savedTasksFile);
-
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            bufferedReader.readLine();
+            String line = bufferedReader.readLine();
+            while (line != null) {
                 CSVFormatter.fromString(line);
             }
-
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);
         }
