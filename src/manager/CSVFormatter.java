@@ -3,20 +3,11 @@ package manager;
 import tasks.*;
 
 public class CSVFormatter {
-    static TaskManager taskManager = Managers.getDefaultManager();
 
     public static String toString(Task task) {
         StringBuilder builder = new StringBuilder();
-        TaskType type = null;
-        if (task instanceof Epic) {
-            type = TaskType.EPIC;
-        } else if (task instanceof Subtask) {
-            type = TaskType.SUBTASK;
-        } else {
-            type = TaskType.TASK;
-        }
         builder.append(task.getId()).append(",");
-        builder.append(type).append(",");
+        builder.append(task.getType()).append(",");
         builder.append(task.getName()).append(",");
         builder.append(task.getTaskStatus()).append(",");
         builder.append(task.getDescription()).append(",");
@@ -27,7 +18,7 @@ public class CSVFormatter {
         return builder.toString();
     }
 
-    public static Object fromString(String line) {
+    public static Task fromString(String line) {
         if (line == null || line.trim().isEmpty()) {
             return null;
         }
@@ -42,7 +33,7 @@ public class CSVFormatter {
         }
 
         String type = parts[1].trim();
-        Object task = null;
+        Task task = null;
         switch (type) {
             case "TASK": {
                 int id = Integer.parseInt(parts[0].trim());

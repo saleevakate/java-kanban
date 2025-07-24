@@ -1,16 +1,11 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskStatus;
+import tasks.*;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -50,22 +45,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             int maxId = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
-                Object obj = CSVFormatter.fromString(line);
-                if (obj != null) {
-                    if (obj instanceof Subtask) {
-                        Subtask subtask = (Subtask) obj;
+                Task task1 = CSVFormatter.fromString(line);
+                if (task1 != null) {
+                    if (task1.getType() == TaskType.SUBTASK) {
+                        Subtask subtask = (Subtask) task1;
                         if (subtask.getId() > maxId) {
                             maxId = subtask.getId();
                         }
                         subtasks.put(subtask.getId(), subtask);
-                    } else if (obj instanceof Epic) {
-                        Epic epic = (Epic) obj;
+                    } else if (task1.getType() == TaskType.EPIC) {
+                        Epic epic = (Epic) task1;
                         if (epic.getId() > maxId) {
                             maxId = epic.getId();
                         }
                         epics.put(epic.getId(), epic);
-                    } else if (obj instanceof Task) {
-                        Task task = (Task) obj;
+                    } else if (task1.getType() == TaskType.TASK) {
+                        Task task = task1;
                         if (task.getId() > maxId) {
                             maxId = task.getId();
                         }
@@ -80,25 +75,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
             FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
-            InMemoryTaskManager.tasks = tasks;
-            InMemoryTaskManager.epics = epics;
-            InMemoryTaskManager.subtasks = subtasks;
-            InMemoryTaskManager.idCounter = maxId;
+            manager.tasks = tasks;
+            manager.epics = epics;
+            manager.subtasks = subtasks;
+            manager.idCounter = maxId;
             return manager;
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);
         }
-    }
-
-    @Override
-    public int generateId() {
-        super.generateId();
-        return idCounter;
-    }
-
-    @Override
-    public void getTasks() {
-        super.getTasks();
     }
 
     @Override
@@ -117,21 +101,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void createSubtask(Subtask subtask, int epicId) {
         super.createSubtask(subtask, epicId);
         save();
-    }
-
-    @Override
-    public Task getTaskById(int id) {
-        return super.getTaskById(id);
-    }
-
-    @Override
-    public Epic getEpicById(int id) {
-        return super.getEpicById(id);
-    }
-
-    @Override
-    public Subtask getSubtaskById(int id) {
-        return super.getSubtaskById(id);
     }
 
     @Override
@@ -205,15 +174,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.updateSubtaskStatus(id, taskStatus);
         save();
     }
-
-    @Override
-    public Set<Integer> getSubtasksByEpicId(int id) {
-        return super.getSubtasksByEpicId(id);
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return super.getHistory();
-    }
-
 }
