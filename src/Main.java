@@ -1,10 +1,11 @@
+import manager.FileBackedTaskManager;
 import manager.Managers;
-import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -12,10 +13,10 @@ import java.util.Set;
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = Managers.getDefaultManager();
+        FileBackedTaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
-
-
+        File file = new File("resources/data.csv");
+        FileBackedTaskManager.loadFromFile(file);
         while (true) {
             System.out.println("Привет!");
             System.out.println("1-список всех задач");
@@ -46,11 +47,11 @@ public class Main {
                     String description = scanner.nextLine();
                     switch (type) {
                         case 1:
-                            Task newTask = new Task(0, name, description, TaskStatus.NEW);
+                            Task newTask = new Task(taskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createTask(newTask);
                             break;
                         case 2:
-                            Epic newEpic = new Epic(0, name, description);
+                            Epic newEpic = new Epic(taskManager.generateId(), name, description, TaskStatus.NEW);
                             taskManager.createEpic(newEpic);
                             break;
                         case 3:
@@ -215,7 +216,6 @@ public class Main {
                         System.out.println(task.getName());
                     }
                 }
-
             }
         }
     }

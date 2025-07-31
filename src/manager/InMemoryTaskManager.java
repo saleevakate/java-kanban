@@ -11,11 +11,11 @@ import java.util.Map;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int idCounter = 0;
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected int idCounter = 0;
+    protected Map<Integer, Task> tasks = new HashMap<>();
+    protected Map<Integer, Epic> epics = new HashMap<>();
+    protected Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int generateId() {
         return idCounter++;
@@ -39,18 +39,16 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        task.setId(generateId());
         tasks.put(task.getId(), task);
     }
 
     @Override
     public void createEpic(Epic epic) {
-        epic.setId(generateId());
         epics.put(epic.getId(), epic);
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask, int epicId) {
+    public void createSubtask(Subtask subtask, int epicId) {
         Epic parentTask = getEpicById(epicId);
         if (parentTask == null) {
             throw new IllegalArgumentException("Такого эпика нет");
@@ -61,7 +59,6 @@ public class InMemoryTaskManager implements TaskManager {
         parentTask.addSubtask(subtask.getId());
         subtasks.put(subtask.getId(), subtask);
         updateEpicStatus(epicId);
-        return subtask;
     }
 
     @Override

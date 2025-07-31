@@ -26,12 +26,12 @@ public class InMemoryTaskManagerTest {
     @BeforeEach
     public void setUp() {
         taskManager = Managers.getDefaultManager();
-        task = new Task(0, "Имя", "Описание", TaskStatus.NEW);
+        task = new Task(1, "Имя", "Описание", TaskStatus.NEW);
         taskManager.createTask(task);
-        epic = new Epic(1, "Эпик", "Описание");
+        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW);
         taskManager.createEpic(epic);
-        subtask = new Subtask(2, "Сабтаск", "Описание", 1, TaskStatus.NEW);
-        taskManager.createSubtask(subtask, 1);
+        subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW);
+        taskManager.createSubtask(subtask, 2);
     }
 
     @AfterEach
@@ -39,29 +39,30 @@ public class InMemoryTaskManagerTest {
         tasks.clear();
         epics.clear();
         subtasks.clear();
+
     }
 
 
     @Test
     public void testCreateTask() {
-        assertEquals(0, task.getId());
+        assertEquals(1, task.getId());
         assertEquals("Имя", task.getName());
         assertEquals("Описание", task.getDescription());
     }
 
     @Test
     public void testCreateEpic() {
-        assertEquals(1, epic.getId());
+        assertEquals(2, epic.getId());
         assertEquals("Эпик", epic.getName());
         assertEquals("Описание", epic.getDescription());
     }
 
     @Test
     public void testCreateSubtask() {
-        assertEquals(2, subtask.getId());
+        assertEquals(3, subtask.getId());
         assertEquals("Сабтаск", subtask.getName());
         assertEquals("Описание", subtask.getDescription());
-        assertEquals(1, subtask.getEpicId());
+        assertEquals(2, subtask.getEpicId());
     }
 
     @Test
@@ -84,23 +85,23 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateTask() {
-        Task newTask = new Task(0, "Имя10", "Описание10", TaskStatus.NEW);
+        Task newTask = new Task(1, "Имя10", "Описание10", TaskStatus.NEW);
         taskManager.updateTask(newTask);
-        assertEquals("Имя10", taskManager.getTaskById(0).getName());
+        assertEquals("Имя10", taskManager.getTaskById(1).getName());
     }
 
     @Test
     public void testUpdateEpic() {
-        Epic newEpic = new Epic(1, "Эпик10", "Описание10");
+        Epic newEpic = new Epic(2, "Эпик10", "Описание10", TaskStatus.NEW);
         taskManager.updateEpic(newEpic);
-        assertEquals("Эпик10", taskManager.getEpicById(1).getName());
+        assertEquals("Эпик10", taskManager.getEpicById(2).getName());
     }
 
     @Test
     public void testUpdateSubtask() {
-        Subtask newSubtask = new Subtask(2, "Сабтаск10", "Описание10", 1, TaskStatus.NEW);
+        Subtask newSubtask = new Subtask(3, "Сабтаск10", "Описание10", 2, TaskStatus.NEW);
         taskManager.updateSubtask(newSubtask);
-        assertEquals("Сабтаск10", taskManager.getSubtaskById(2).getName());
+        assertEquals("Сабтаск10", taskManager.getSubtaskById(3).getName());
     }
 
     @Test
