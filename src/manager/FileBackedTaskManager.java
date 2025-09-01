@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private final File savedTasksFile;
+    private File savedTasksFile = new File("resources/data.csv");;
 
     public FileBackedTaskManager(File savedTasksFile) {
         this.savedTasksFile = savedTasksFile;
