@@ -11,30 +11,29 @@ import java.util.Map;
 import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
-    protected int idCounter = 0;
-    protected Map<Integer, Task> tasks = new HashMap<>();
-    protected Map<Integer, Epic> epics = new HashMap<>();
-    protected Map<Integer, Subtask> subtasks = new HashMap<>();
+
+    protected static int idCounter = 0;
+    protected static Map<Integer, Task> tasks = new HashMap<>();
+    protected static Map<Integer, Epic> epics = new HashMap<>();
+    protected static Map<Integer, Subtask> subtasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
 
-    public int generateId() {
-        return idCounter++;
-    }
-
-    public void getTasks() {
+    public void getAllTasks() {
         System.out.println("Список всех задач:");
         for (Task task : tasks.values()) {
-            System.out.println(task.getName());
-            System.out.println(task.getId());
+            System.out.println("Задача: " + task.getName() + ", ID: " + task.getId());
         }
         for (Epic epic : epics.values()) {
-            System.out.println(epic.getName());
-            System.out.println(epic.getId());
+            System.out.println("Эпик: " + epic.getName() + ", ID: " + epic.getId());
         }
         for (Subtask subtask : subtasks.values()) {
-            System.out.println(subtask.getName());
-            System.out.println(subtask.getId());
+            System.out.println("Подзадача: " + subtask.getName() + ", ID: " + subtask.getId());
         }
+    }
+
+    @Override
+    public int generateId() {
+        return 0;
     }
 
     @Override

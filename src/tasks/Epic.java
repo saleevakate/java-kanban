@@ -7,6 +7,8 @@ import java.util.HashSet;
 
 public class Epic extends Task {
     private Set<Integer> subtasksId = new HashSet<>();
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Epic(int id, String name, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
         super(id, name, description, taskStatus, duration, startTime);
@@ -14,6 +16,7 @@ public class Epic extends Task {
 
     @Override
     public LocalDateTime getEndTime() {
+        LocalDateTime endTime = startTime.plus(duration);
         return endTime;
     }
 

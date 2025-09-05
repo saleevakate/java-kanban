@@ -8,6 +8,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +19,8 @@ public class InMemoryTaskHistoryTest {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    Duration minutes = Duration.ofMinutes(90);
+    LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
 
 
     Task task;
@@ -25,11 +29,11 @@ public class InMemoryTaskHistoryTest {
 
     @BeforeEach
     public void setUp() {
-        task = new Task(1, "Имя", "Описание", TaskStatus.NEW);
+        task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
         taskManager.createTask(task);
-        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW);
+        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW, minutes, time);
         taskManager.createEpic(epic);
-        subtask = new Subtask(3, "Сабтаск", "Описание", 1, TaskStatus.NEW);
+        subtask = new Subtask(3, "Сабтаск", "Описание", 1, TaskStatus.NEW, minutes, time);
         taskManager.createSubtask(subtask, 2);
     }
 

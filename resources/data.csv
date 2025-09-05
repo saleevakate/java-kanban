@@ -1,4 +1,5 @@
-id,type,name,status,description,epic
-1,TASK,Имя,NEW,Описание,
-2,EPIC,Эпик,DONE,Описание,
-3,SUBTASK,Сабтаск,DONE,Описание,2
+id,type,name,status,description,duration,startTime,epic
+1,TASK,Выбросить мусор,NEW,Весь,PT10M,2000-01-01T00:00:00.000,
+2,TASK,Помыть полы,DONE,Все,PT1H30M,2000-01-01T12:00:00.000,
+3,EPIC,Собрать вещи,DONE,Все,PT40M,2000-01-02T12:00:00.000,
+4,SUBTASK,Помыть полы,DONE,Все,PT1H30M,2000-01-01T12:00:00.000,3

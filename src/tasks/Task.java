@@ -23,7 +23,7 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-
+        LocalDateTime endTime = startTime.plus(duration);
         return endTime;
     }
 

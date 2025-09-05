@@ -1,11 +1,9 @@
 package manager;
 
-import java.io.File;
-
 public class Managers {
 
     public static FileBackedTaskManager getDefaultManager() {
-        return new FileBackedTaskManager(new File("resources/data.csv"));
+        return new FileBackedTaskManager();
     }
 
     public static HistoryManager getDefaultHistory() {

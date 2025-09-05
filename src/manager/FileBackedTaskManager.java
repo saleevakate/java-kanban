@@ -7,17 +7,14 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
-    private File savedTasksFile = new File("resources/data.csv");;
-
-    public FileBackedTaskManager(File savedTasksFile) {
-        this.savedTasksFile = savedTasksFile;
-    }
+    public static File savedTasksFile = new File("resources/data.csv");
 
     public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
-            writer.write("id,type,name,status,description,epic");
+            writer.write("id,type,name,status,description,duration,startTime,epic");
             writer.newLine();
             for (Task task : tasks.values()) {
                 writer.write(CSVFormatter.toString(task));
@@ -39,32 +36,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
             bufferedReader.readLine();
-            Map<Integer, Task> tasks = new HashMap<>();
-            Map<Integer, Epic> epics = new HashMap<>();
-            Map<Integer, Subtask> subtasks = new HashMap<>();
+            FileBackedTaskManager manager = new FileBackedTaskManager();
             int maxId = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {
-                Task task1 = CSVFormatter.fromString(line);
-                if (task1 != null) {
-                    if (task1.getType() == TaskType.SUBTASK) {
-                        Subtask subtask = (Subtask) task1;
+                Task task = CSVFormatter.fromString(line);
+                if (task != null) {
+                    if (task.getType() == TaskType.SUBTASK) {
+                        Subtask subtask = (Subtask) task;
                         if (subtask.getId() > maxId) {
                             maxId = subtask.getId();
                         }
-                        subtasks.put(subtask.getId(), subtask);
-                    } else if (task1.getType() == TaskType.EPIC) {
-                        Epic epic = (Epic) task1;
+                        manager.createSubtask(subtask, subtask.getEpicId());
+                    } else if (task.getType() == TaskType.EPIC) {
+                        Epic epic = (Epic) task;
                         if (epic.getId() > maxId) {
                             maxId = epic.getId();
                         }
-                        epics.put(epic.getId(), epic);
-                    } else if (task1.getType() == TaskType.TASK) {
-                        Task task = task1;
-                        if (task.getId() > maxId) {
-                            maxId = task.getId();
+                        manager.createEpic(epic);
+                    } else if (task.getType() == TaskType.TASK) {
+                        Task task1 = task;
+                        if (task1.getId() > maxId) {
+                            maxId = task1.getId();
                         }
-                        tasks.put(task.getId(), task);
+                        manager.createTask(task1);
                     }
                 }
             }
@@ -74,11 +69,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     parentEpic.addSubtask(subtask.getId());
                 }
             }
-            FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
-            manager.tasks = tasks;
-            manager.epics = epics;
-            manager.subtasks = subtasks;
-            manager.idCounter = maxId;
+            idCounter = maxId;
             return manager;
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при загрузке из файла", e);

@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 class FileBackedTaskManagerTest {
@@ -25,15 +27,17 @@ class FileBackedTaskManagerTest {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    Duration minutes = Duration.ofMinutes(90);
+    LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
 
     @BeforeEach
     void setUp() {
         savedTasksFile = tempDir.resolve("tasks.csv");
-        taskManager = new FileBackedTaskManager(savedTasksFile.toFile());
+        taskManager = new FileBackedTaskManager();
 
-        Task task = new Task(1, "Таск", "Описание", TaskStatus.NEW);
-        Epic epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW);
-        Subtask subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW);
+        Task task = new Task(1, "Таск", "Описание", TaskStatus.NEW, minutes, time);
+        Epic epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW, minutes, time);
+        Subtask subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW, minutes, time);
 
         taskManager.createTask(task);
         taskManager.createEpic(epic);

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,15 +24,17 @@ public class InMemoryTaskManagerTest {
     Epic epic;
     Subtask subtask;
     TaskManager taskManager;
+    Duration minutes = Duration.ofMinutes(90);
+    LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
 
     @BeforeEach
     public void setUp() {
         taskManager = Managers.getDefaultManager();
-        task = new Task(1, "Имя", "Описание", TaskStatus.NEW);
+        task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
         taskManager.createTask(task);
-        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW);
+        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW, minutes, time);
         taskManager.createEpic(epic);
-        subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW);
+        subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW, minutes, time);
         taskManager.createSubtask(subtask, 2);
     }
 
@@ -85,21 +89,21 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateTask() {
-        Task newTask = new Task(1, "Имя10", "Описание10", TaskStatus.NEW);
+        Task newTask = new Task(1, "Имя10", "Описание10", TaskStatus.NEW, minutes, time);
         taskManager.updateTask(newTask);
         assertEquals("Имя10", taskManager.getTaskById(1).getName());
     }
 
     @Test
     public void testUpdateEpic() {
-        Epic newEpic = new Epic(2, "Эпик10", "Описание10", TaskStatus.NEW);
+        Epic newEpic = new Epic(2, "Эпик10", "Описание10", TaskStatus.NEW, minutes, time);
         taskManager.updateEpic(newEpic);
         assertEquals("Эпик10", taskManager.getEpicById(2).getName());
     }
 
     @Test
     public void testUpdateSubtask() {
-        Subtask newSubtask = new Subtask(3, "Сабтаск10", "Описание10", 2, TaskStatus.NEW);
+        Subtask newSubtask = new Subtask(3, "Сабтаск10", "Описание10", 2, TaskStatus.NEW, minutes, time);
         taskManager.updateSubtask(newSubtask);
         assertEquals("Сабтаск10", taskManager.getSubtaskById(3).getName());
     }

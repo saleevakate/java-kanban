@@ -2,6 +2,10 @@ package manager;
 
 import tasks.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class CSVFormatter {
 
     public static String toString(Task task) {
@@ -11,6 +15,9 @@ public class CSVFormatter {
         builder.append(task.getName()).append(",");
         builder.append(task.getTaskStatus()).append(",");
         builder.append(task.getDescription()).append(",");
+        builder.append(task.getDuration().toString()).append(",");
+        builder.append(task.getStartTime().format(
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))).append(",");
         if (task instanceof Subtask subtask) {
             builder.append(subtask.getEpicId());
         }
@@ -39,25 +46,34 @@ public class CSVFormatter {
                 int id = Integer.parseInt(parts[0].trim());
                 String name = parts[2].trim();
                 String description = parts[4].trim();
-                task = new Task(id, name, description, status);
+                Duration duration = Duration.parse(parts[5].trim());
+                LocalDateTime startTime = LocalDateTime.parse(parts[6],
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                task = new Task(id, name, description, status, duration, startTime);
                 break;
             }
             case "EPIC": {
                 int id = Integer.parseInt(parts[0].trim());
                 String name = parts[2].trim();
                 String description = parts[4].trim();
-                task = new Epic(id, name, description, status);
+                Duration duration = Duration.parse(parts[5].trim());
+                LocalDateTime startTime = LocalDateTime.parse(parts[6],
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                task = new Epic(id, name, description, status, duration, startTime);
                 break;
             }
             case "SUBTASK": {
-                if (parts.length < 6) {
+                if (parts.length < 7) {
                     throw new IllegalArgumentException("Неверный формат строки для Subtask");
                 }
                 int id = Integer.parseInt(parts[0].trim());
                 String name = parts[2].trim();
                 String description = parts[4].trim();
-                int epicId = Integer.parseInt(parts[5].trim());
-                task = new Subtask(id, name, description, epicId, status);
+                Duration duration = Duration.parse(parts[5].trim());
+                LocalDateTime startTime = LocalDateTime.parse(parts[6],
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                int epicId = Integer.parseInt(parts[7].trim());
+                task = new Subtask(id, name, description, epicId, status, duration, startTime);
                 break;
             }
         }
