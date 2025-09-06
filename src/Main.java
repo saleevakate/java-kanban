@@ -29,7 +29,7 @@ public class Main {
             System.out.println("Привет!");
             System.out.println("1-список всех задач");
             System.out.println("2-создать задачу");
-            System.out.println("3-выход");
+            System.out.println("3-конец задачи по id");
             int command = scanner.nextInt();
             switch (command) {
                 case 1: {
@@ -56,7 +56,8 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    System.out.println();
+                    System.out.println(task1.getEndTime());
+                    System.out.println(subtask.getEndTime());
                 }
             }
         }
