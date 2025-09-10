@@ -12,13 +12,6 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
-    @Override
-    public LocalDateTime getEndTime() {
-        LocalDateTime endTime = super.getEndTime();
-        return endTime;
-    }
-
-
     public int getEpicId() {
         return epicId;
     }

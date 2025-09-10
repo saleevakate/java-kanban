@@ -64,9 +64,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
             for (Subtask subtask : subtasks.values()) {
-                Epic parentEpic = epics.get(subtask.getEpicId());
+                Epic parentEpic = manager.getEpicById(subtask.getEpicId());
                 if (parentEpic != null) {
-                    parentEpic.addSubtask(subtask.getId());
+                    parentEpic.addSubtask(subtask);
                 }
             }
             idCounter = maxId;

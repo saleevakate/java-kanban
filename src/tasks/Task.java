@@ -9,9 +9,9 @@ public class Task {
     private int id;
     private String name;
     private String description;
-    private Duration duration;
-    private LocalDateTime startTime;
-
+    protected Duration duration;
+    protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
 
     public Task(int id, String name, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
         this.id = id;
@@ -23,9 +23,10 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        LocalDateTime endTime = startTime.plus(duration);
+        endTime = startTime.plus(duration);
         return endTime;
     }
+
 
     public TaskType getType() {
         return TaskType.TASK;
@@ -90,4 +91,9 @@ public class Task {
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
 }

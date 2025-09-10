@@ -6,7 +6,6 @@ import tasks.Task;
 import tasks.TaskStatus;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
 
@@ -48,7 +47,7 @@ public interface TaskManager {
 
     void updateSubtaskStatus(int id, TaskStatus taskStatus);
 
-    Set<Integer> getSubtasksByEpicId(int id);
+    List<Subtask> getSubtasksByEpicId(int id);
 
     List<Task> getHistory();
 

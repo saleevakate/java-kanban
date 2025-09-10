@@ -8,7 +8,6 @@ import tasks.TaskStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -56,9 +55,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getEpicId() == subtask.getId()) {
             throw new IllegalArgumentException("Подзадача не может быть своим же эпиком");
         }
-        parentTask.addSubtask(subtask.getId());
+        parentTask.addSubtask(subtask);
         subtasks.put(subtask.getId(), subtask);
         updateEpicStatus(epicId);
+        parentTask.updateTime();
     }
 
     @Override
@@ -144,6 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.setTaskStatus(TaskStatus.NEW);
+            epic.updateTime();
         }
     }
 
@@ -155,11 +156,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteEpicById(int id) {
-        Set<Integer> subtasksId = getSubtasksByEpicId(id);
+        List<Subtask> subtasksByEpicId = getSubtasksByEpicId(id);
         epics.remove(id);
         historyManager.remove(id);
-        for (int subtaskId : subtasksId) {
-            subtasks.remove(subtaskId);
+        for (Subtask subtask : subtasksByEpicId) {
+            subtasks.remove(subtask);
             historyManager.remove(id);
         }
     }
@@ -185,7 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epicTask == null) {
             throw new IllegalArgumentException("Tasks.Epic с ID " + epicId + " не найден");
         }
-        Set<Integer> subtaskIds = epicTask.getSubtasks();
+        List<Subtask> subtaskIds = epicTask.getSubtasks();
         if (subtaskIds.isEmpty()) {
             epicTask.setTaskStatus(TaskStatus.NEW);
             return;
@@ -193,10 +194,9 @@ public class InMemoryTaskManager implements TaskManager {
         boolean allNew = true;
         boolean allDone = true;
         boolean hasInProgress = false;
-        for (Integer subtaskId : subtaskIds) {
-            Subtask subtask = getSubtaskById(subtaskId);
+        for (Subtask subtask : subtaskIds) {
             if (subtask == null) {
-                throw new IllegalStateException("Подзадача с ID " + subtaskId + " не найдена");
+                throw new IllegalStateException("Подзадача с ID " + subtask.getId() + " не найдена");
             }
 
             TaskStatus status = subtask.getTaskStatus();
@@ -218,7 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (hasInProgress) {
             epicTask.setTaskStatus(TaskStatus.IN_PROGRESS);
         } else {
-            epicTask.setTaskStatus(TaskStatus.IN_PROGRESS); // Если есть смешанные статусы
+            epicTask.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
     }
 
@@ -231,7 +231,7 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public Set<Integer> getSubtasksByEpicId(int id) {
+    public List<Subtask> getSubtasksByEpicId(int id) {
         Epic epic = epics.get(id);
         if (epic != null) {
             return epic.getSubtasks();
