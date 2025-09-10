@@ -10,6 +10,10 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
+    public FileBackedTaskManager(File savedTasksFile) {
+        this.savedTasksFile = savedTasksFile;
+    }
+
     public static File savedTasksFile = new File("resources/data.csv");
 
     public void save() {
@@ -36,7 +40,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
             bufferedReader.readLine();
-            FileBackedTaskManager manager = new FileBackedTaskManager();
+            FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
             int maxId = 0;
             String line;
             while ((line = bufferedReader.readLine()) != null && !line.isEmpty()) {

@@ -12,6 +12,11 @@ public class Subtask extends Task {
         this.epicId = epicId;
     }
 
+    public LocalDateTime getEndTime() {
+        endTime = startTime.plus(duration);
+        return endTime;
+    }
+
     public int getEpicId() {
         return epicId;
     }

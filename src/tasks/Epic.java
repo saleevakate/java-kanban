@@ -15,9 +15,12 @@ public class Epic extends Task {
     }
 
     public void updateTime() {
+        if (endTime == null) {
+            endTime = getStartTime().plus(getDuration());
+        }
         LocalDateTime start = null;
         LocalDateTime end = null;
-        Duration totalDuration = Duration.ofMinutes(0);
+        Duration totalDuration = Duration.ZERO;
         for (Subtask subtask : subtasksList) {
             if (subtask.getStartTime() != null && subtask.getDuration() != null) {
                 if (start == null || subtask.getStartTime().isBefore(start)) {
@@ -29,14 +32,19 @@ public class Epic extends Task {
                         end = subtask.getEndTime();
                     }
                 }
+
                 totalDuration = totalDuration.plus(subtask.getDuration());
             }
         }
         if (start != null) {
             setStartTime(start);
         }
-        setDuration(totalDuration);
-        this.endTime = end;
+        if (totalDuration != Duration.ZERO) {
+            setDuration(totalDuration);
+        }
+        if (end != null) {
+            this.endTime = end;
+        }
     }
 
     public LocalDateTime getEndTime() {

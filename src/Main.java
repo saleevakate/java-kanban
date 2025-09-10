@@ -16,18 +16,18 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         taskManager.loadFromFile(taskManager.savedTasksFile);
         Task task1 = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
-                , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 0, 0));
+                , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
         Task task2 = new Task(2, "Помыть полы", "Все", TaskStatus.DONE
-                , Duration.ofMinutes(90), LocalDateTime.of(2000, 1, 1, 12, 0));
+                , Duration.ofMinutes(90), LocalDateTime.of(2000, 1, 1, 2, 0));
 
         Epic epic = new Epic(3, "Собрать вещи", "Все", TaskStatus.NEW
-                , Duration.ofMinutes(40), LocalDateTime.of(2000, 1, 3, 12, 0));
+                , Duration.ofMinutes(40), LocalDateTime.of(2000, 1, 3, 3, 0));
 
         Subtask subtask1 = new Subtask(4, "Помыть полы", "Все", 3, TaskStatus.DONE
-                , Duration.ofMinutes(90), LocalDateTime.of(2000, 1, 1, 12, 0));
+                , Duration.ofMinutes(90), LocalDateTime.of(2000, 1, 1, 4, 0));
 
         Subtask subtask2 = new Subtask(5, "Помыть полы", "Все", 3, TaskStatus.DONE
-                , Duration.ofMinutes(50), LocalDateTime.of(2000, 2, 12, 13, 30));
+                , Duration.ofMinutes(50), LocalDateTime.of(2000, 2, 12, 5, 0));
 
         while (true) {
             System.out.println("Привет!");

@@ -17,11 +17,10 @@ public class CSVFormatter {
         builder.append(task.getDescription()).append(",");
         builder.append(task.getDuration().toString()).append(",");
         builder.append(task.getStartTime().format(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))).append(",");
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"))).append(",");
         if (task instanceof Subtask subtask) {
             builder.append(subtask.getEpicId());
         }
-
         return builder.toString();
     }
 
@@ -48,7 +47,7 @@ public class CSVFormatter {
                 String description = parts[4].trim();
                 Duration duration = Duration.parse(parts[5].trim());
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                 task = new Task(id, name, description, status, duration, startTime);
                 break;
             }
@@ -58,7 +57,7 @@ public class CSVFormatter {
                 String description = parts[4].trim();
                 Duration duration = Duration.parse(parts[5].trim());
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                 task = new Epic(id, name, description, status, duration, startTime);
                 break;
             }
@@ -71,7 +70,7 @@ public class CSVFormatter {
                 String description = parts[4].trim();
                 Duration duration = Duration.parse(parts[5].trim());
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                 int epicId = Integer.parseInt(parts[7].trim());
                 task = new Subtask(id, name, description, epicId, status, duration, startTime);
                 break;
@@ -79,6 +78,4 @@ public class CSVFormatter {
         }
         return task;
     }
-
-
 }

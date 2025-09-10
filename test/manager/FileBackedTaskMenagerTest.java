@@ -15,77 +15,74 @@ import java.nio.file.Path;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 class FileBackedTaskManagerTest {
 
     @TempDir
     protected Path tempDir;
 
-    private FileBackedTaskManager taskManager;
+    FileBackedTaskManager taskManager = Managers.getDefaultManager();
     private Path savedTasksFile;
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    Duration minutes = Duration.ofMinutes(90);
-    LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
+    Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
+            , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
+
+    Epic epic = new Epic(2, "Собрать вещи", "Все", TaskStatus.NEW
+            , Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
+
+    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2, TaskStatus.NEW
+            , Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         savedTasksFile = tempDir.resolve("tasks.csv");
-        taskManager = new FileBackedTaskManager();
-
-        Task task = new Task(1, "Таск", "Описание", TaskStatus.NEW, minutes, time);
-        Epic epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW, minutes, time);
-        Subtask subtask = new Subtask(3, "Сабтаск", "Описание", 2, TaskStatus.NEW, minutes, time);
-
+        taskManager = new FileBackedTaskManager(savedTasksFile.toFile());
+        Files.createFile(savedTasksFile);
         taskManager.createTask(task);
         taskManager.createEpic(epic);
-        taskManager.createSubtask(subtask, 2);
+        taskManager.createSubtask(subtask, subtask.getEpicId());
     }
 
     @Test
     void testSave() throws IOException {
-            String content = Files.readString(savedTasksFile);
-            String[] lines = content.split("\n");
-            assertEquals("id,type,name,status,description,epic", lines[0].trim());
-            assertEquals(4, lines.length);
-            String expectedTaskLine = "1,TASK,Таск,NEW,Описание,";
-            String expectedEpicLine = "2,EPIC,Эпик,NEW,Описание,";
-            String expectedSubtaskLine = "3,SUBTASK,Сабтаск,NEW,Описание,2";
-            assertEquals(expectedTaskLine, lines[1].trim());
-            assertEquals(expectedEpicLine, lines[2].trim());
-            assertEquals(expectedSubtaskLine, lines[3].trim());
-            assertTrue(content.contains(expectedTaskLine));
-            assertTrue(content.contains(expectedEpicLine));
-            assertTrue(content.contains(expectedSubtaskLine));
+        String content = Files.readString(savedTasksFile);
+        String[] lines = content.split("\n");
+        assertEquals("id,type,name,status,description,duration,startTime,epic", lines[0].trim());
+        String expectedTaskLine = "1,TASK,Выбросить мусор,NEW,Весь,PT10M,2000-01-01T01:00,";
+        String expectedEpicLine = "2,EPIC,Собрать вещи,NEW,Все,PT30M,2000-03-03T03:00,";
+        String expectedSubtaskLine = "3,SUBTASK,Помыть полы,NEW,Все,PT30M,2000-03-03T03:00,2";
+        assertEquals(expectedTaskLine, lines[1].trim());
+        assertEquals(expectedEpicLine, lines[2].trim());
+        assertEquals(expectedSubtaskLine, lines[3].trim());
     }
 
     @Test
     void testLoadFromFile() throws IOException {
-        assertTrue(Files.exists(savedTasksFile));
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(savedTasksFile.toFile());
-
         Task loadedTask = loadedManager.getTaskById(1);
-        assertNotNull(loadedTask, "Задача не загружена");
         assertEquals(1, loadedTask.getId());
-        assertEquals("Таск", loadedTask.getName());
+        assertEquals("Выбросить мусор", loadedTask.getName());
         assertEquals(TaskStatus.NEW, loadedTask.getTaskStatus());
-        assertEquals("Описание", loadedTask.getDescription());
+        assertEquals("Весь", loadedTask.getDescription());
+        assertEquals(Duration.ofMinutes(10), loadedTask.getDuration());
+        assertEquals(LocalDateTime.of(2000, 1, 1, 1, 0), loadedTask.getStartTime());
 
         Epic loadedEpic = loadedManager.getEpicById(2);
-        assertNotNull(loadedEpic, "Эпик не загружен");
         assertEquals(2, loadedEpic.getId());
-        assertEquals("Эпик", loadedEpic.getName());
+        assertEquals("Собрать вещи", loadedEpic.getName());
         assertEquals(TaskStatus.NEW, loadedEpic.getTaskStatus());
-        assertEquals("Описание", loadedEpic.getDescription());
+        assertEquals("Все", loadedEpic.getDescription());
+        assertEquals(Duration.ofMinutes(30), loadedEpic.getDuration());
+        assertEquals(LocalDateTime.of(2000, 3, 3, 3, 0), loadedEpic.getStartTime());
 
+        // Проверяем подзадачу
         Subtask loadedSubtask = loadedManager.getSubtaskById(3);
         assertNotNull(loadedSubtask, "Подзадача не загружена");
         assertEquals(3, loadedSubtask.getId());
-        assertEquals("Сабтаск", loadedSubtask.getName());
+        assertEquals("Помыть полы", loadedSubtask.getName());  // Исправлено
         assertEquals(TaskStatus.NEW, loadedSubtask.getTaskStatus());
-        assertEquals("Описание", loadedSubtask.getDescription());
+        assertEquals("Все", loadedSubtask.getDescription());   // Исправлено
         assertEquals(2, loadedSubtask.getEpicId());
+        assertEquals(Duration.ofMinutes(30), loadedSubtask.getDuration());
+        assertEquals(LocalDateTime.of(2000, 3, 3, 3, 0), loadedSubtask.getStartTime());
     }
 }

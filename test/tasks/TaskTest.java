@@ -1,8 +1,5 @@
 package tasks;
 
-import manager.InMemoryTaskManager;
-import manager.Managers;
-import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,21 +11,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TaskTest {
 
     Task task;
-    TaskManager taskManager = new InMemoryTaskManager();
     Duration minutes = Duration.ofMinutes(90);
     LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
+    LocalDateTime endTime = LocalDateTime.of(2000, 1, 1, 1, 30);
 
     @BeforeEach
     public void setUp() {
         task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
-
     }
 
     @Test
-    public void testCreateTask() {
-        assertEquals(1, task.getId());
-        assertEquals("Имя", task.getName());
-        assertEquals("Описание", task.getDescription());
-        assertEquals(minutes, task.getDuration());
+    public void testGetEndTime() {
+        LocalDateTime actualEndTime = task.getEndTime();
+        assertEquals(2000, actualEndTime.getYear());
+        assertEquals(01, actualEndTime.getMonthValue());
+        assertEquals(01, actualEndTime.getDayOfMonth());
+        assertEquals(1, actualEndTime.getHour());
+        assertEquals(30, actualEndTime.getMinute());
     }
 }
