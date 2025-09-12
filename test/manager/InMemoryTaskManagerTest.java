@@ -52,6 +52,7 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteTasks();
         taskManager.deleteEpics();
         taskManager.deleteSubtasks();
+        taskManager.prioritizedTasks.clear();
         Files.deleteIfExists(testFile);
     }
 

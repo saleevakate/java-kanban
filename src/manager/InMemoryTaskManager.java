@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected static Map<Integer, Epic> epics = new HashMap<>();
     protected static Map<Integer, Subtask> subtasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-    public static TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    protected static TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public void getAllTasks() {
         System.out.println("Список всех задач:");
@@ -180,23 +180,23 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(int id) {
-        tasks.remove(id);
         historyManager.remove(id);
         prioritizedTasks.remove(getTaskById(id));
+        tasks.remove(id);
     }
 
     @Override
     public void deleteEpicById(int id) {
         List<Subtask> subtasksByEpicId = getSubtasksByEpicId(id);
-        epics.remove(id);
+        prioritizedTasks.remove(getEpicById(id));
         historyManager.remove(id);
+        epics.remove(id);
         subtasksByEpicId.stream()
                 .forEach(subtask -> {
                     subtasks.remove(subtask);
                     historyManager.remove(id);
                     prioritizedTasks.remove(subtask);
                 });
-        prioritizedTasks.remove(getEpicById(id));
     }
 
     @Override

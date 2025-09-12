@@ -64,10 +64,7 @@ public class Main {
                     break;
                 }
                 case 5: {
-                    InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
-                    for (Task task : inMemoryTaskManager.prioritizedTasks) {
-                        System.out.println(task.getName() + task.getStartTime());
-                    }
+
                     break;
                 }
                 case 6: {

@@ -1,4 +1,0 @@
-id,type,name,status,description,duration,startTime,epic
-1,TASK,Выбросить мусор,NEW,Весь,PT10M,2000-01-01T01:00,
-2,EPIC,Собрать вещи,NEW,Все,PT30M,2000-03-03T03:00,
-3,SUBTASK,Помыть полы,NEW,Все,PT30M,2000-03-03T03:00,2

@@ -1,5 +1,6 @@
 package manager;
 
+import org.junit.jupiter.api.io.TempDir;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -8,40 +9,47 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskHistoryTest {
-    TaskManager taskManager = Managers.getDefaultManager();
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    Duration minutes = Duration.ofMinutes(90);
-    LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
+    @TempDir
+    protected Path tempDir;
 
+    FileBackedTaskManager taskManager;
+    private Path testFile;
 
-    Task task;
-    Epic epic;
-    Subtask subtask;
+    Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
+            , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
+
+    Epic epic = new Epic(2, "Собрать вещи", "Все", TaskStatus.NEW
+            , Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
+
+    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2, TaskStatus.NEW
+            , Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     @BeforeEach
-    public void setUp() {
-        task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
+    public void setUp() throws IOException {
+        testFile = tempDir.resolve("test.csv");
+        taskManager = new FileBackedTaskManager(testFile.toFile());
+        Files.createFile(testFile);
         taskManager.createTask(task);
-        epic = new Epic(2, "Эпик", "Описание", TaskStatus.NEW, minutes, time);
         taskManager.createEpic(epic);
-        subtask = new Subtask(3, "Сабтаск", "Описание", 1, TaskStatus.NEW, minutes, time);
-        taskManager.createSubtask(subtask, 2);
+        taskManager.createSubtask(subtask, subtask.getEpicId());
     }
 
     @AfterEach
-    public void delete() {
-        tasks.clear();
-        epics.clear();
-        subtasks.clear();
+    public void delete() throws IOException {
+        taskManager.deleteTasks();
+        taskManager.deleteEpics();
+        taskManager.deleteSubtasks();
+        taskManager.prioritizedTasks.clear();
+        Files.deleteIfExists(testFile);
     }
 
     @Test

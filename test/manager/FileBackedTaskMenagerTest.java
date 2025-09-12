@@ -48,6 +48,7 @@ class FileBackedTaskManagerTest {
         taskManager.deleteTasks();
         taskManager.deleteEpics();
         taskManager.deleteSubtasks();
+        taskManager.prioritizedTasks.clear();
         Files.delete(testFile);
     }
 

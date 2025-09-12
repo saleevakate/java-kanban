@@ -19,8 +19,6 @@ public class TaskTest {
         task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
     }
 
-
-
     @Test
     public void testGetEndTime() {
         LocalDateTime actualEndTime = task.getEndTime();
