@@ -64,7 +64,9 @@ public class Main {
                     break;
                 }
                 case 5: {
-
+                    for (Task task : taskManager.prioritizedTasks) {
+                        System.out.println(task.getName() + task.getStartTime());
+                    }
                     break;
                 }
                 case 6: {

@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected static Map<Integer, Epic> epics = new HashMap<>();
     protected static Map<Integer, Subtask> subtasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-    protected static TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    public static TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
     public void getAllTasks() {
         System.out.println("Список всех задач:");
