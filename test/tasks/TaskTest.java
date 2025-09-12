@@ -13,12 +13,13 @@ public class TaskTest {
     Task task;
     Duration minutes = Duration.ofMinutes(90);
     LocalDateTime time = LocalDateTime.of(2000, 1, 1, 0, 0);
-    LocalDateTime endTime = LocalDateTime.of(2000, 1, 1, 1, 30);
 
     @BeforeEach
     public void setUp() {
         task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
     }
+
+
 
     @Test
     public void testGetEndTime() {

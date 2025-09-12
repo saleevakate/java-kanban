@@ -20,18 +20,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(savedTasksFile))) {
             writer.write("id,type,name,status,description,duration,startTime,epic");
             writer.newLine();
-            for (Task task : tasks.values()) {
-                writer.write(CSVFormatter.toString(task));
-                writer.newLine();
-            }
-            for (Epic epic : epics.values()) {
-                writer.write(CSVFormatter.toString(epic));
-                writer.newLine();
-            }
-            for (Subtask subtask : subtasks.values()) {
-                writer.write(CSVFormatter.toString(subtask));
-                writer.newLine();
-            }
+            tasks.values().stream()
+                    .map(CSVFormatter::toString)
+                    .forEach(line -> {
+                        try {
+                            writer.write(line);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+            epics.values().stream()
+                    .map(CSVFormatter::toString)
+                    .forEach(line -> {
+                        try {
+                            writer.write(line);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
+            subtasks.values().stream()
+                    .map(CSVFormatter::toString)
+                    .forEach(line -> {
+                        try {
+                            writer.write(line);
+                            writer.newLine();
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    });
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении файла", e);
         }
@@ -47,16 +65,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = CSVFormatter.fromString(line);
                 if (task != null) {
                     if (task.getType() == TaskType.SUBTASK) {
-                        Subtask subtask = (Subtask) task;
-                        if (subtask.getId() > maxId) {
-                            maxId = subtask.getId();
+                        Subtask sub = (Subtask) task;
+                        if (sub.getId() > maxId) {
+                            maxId = sub.getId();
                         }
+                        Subtask subtask = new Subtask(sub.getId(), sub.getName(), sub.getDescription(), sub.getEpicId(), sub.getTaskStatus(),
+                                sub.getDuration(), sub.getStartTime());
                         manager.createSubtask(subtask, subtask.getEpicId());
                     } else if (task.getType() == TaskType.EPIC) {
-                        Epic epic = (Epic) task;
-                        if (epic.getId() > maxId) {
-                            maxId = epic.getId();
+                        Epic epic1 = (Epic) task;
+                        if (epic1.getId() > maxId) {
+                            maxId = epic1.getId();
                         }
+                        Epic epic = new Epic(epic1.getId(), epic1.getName(), epic1.getDescription(), epic1.getTaskStatus(),
+                                epic1.getDuration(), epic1.getStartTime());
                         manager.createEpic(epic);
                     } else if (task.getType() == TaskType.TASK) {
                         Task task1 = task;
@@ -67,12 +89,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     }
                 }
             }
-            for (Subtask subtask : subtasks.values()) {
-                Epic parentEpic = manager.getEpicById(subtask.getEpicId());
-                if (parentEpic != null) {
-                    parentEpic.addSubtask(subtask);
-                }
-            }
+            subtasks.values().stream()
+                    .forEach(subtask -> {
+                        Epic parentEpic = manager.getEpicById(subtask.getEpicId());
+                        if (parentEpic != null) {
+                            parentEpic.addSubtask(subtask);
+                        }
+                    });
             idCounter = maxId;
             return manager;
         } catch (IOException e) {

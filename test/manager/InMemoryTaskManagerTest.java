@@ -1,5 +1,6 @@
 package manager;
 
+import org.junit.jupiter.api.io.TempDir;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -8,16 +9,22 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import static manager.InMemoryTaskManager.epics;
-import static manager.InMemoryTaskManager.subtasks;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryTaskManagerTest {
 
-    FileBackedTaskManager taskManager = Managers.getDefaultManager();
+    @TempDir
+    protected Path tempDir;
+
+    FileBackedTaskManager taskManager;
+    private Path testFile;
+
     Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
             , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
 
@@ -31,17 +38,21 @@ public class InMemoryTaskManagerTest {
     LocalDateTime time = LocalDateTime.of(2000, 9, 9, 9, 0);
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
+        testFile = tempDir.resolve("test.csv");
+        taskManager = new FileBackedTaskManager(testFile.toFile());
+        Files.createFile(testFile);
         taskManager.createTask(task);
         taskManager.createEpic(epic);
         taskManager.createSubtask(subtask, subtask.getEpicId());
     }
 
     @AfterEach
-    public void delete() {
+    public void delete() throws IOException {
         taskManager.deleteTasks();
         taskManager.deleteEpics();
         taskManager.deleteSubtasks();
+        Files.deleteIfExists(testFile);
     }
 
 
@@ -115,14 +126,14 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testDeleteEpic() {
         taskManager.deleteEpics();
-        assertTrue(epics.isEmpty());
-        assertTrue(subtasks.isEmpty());
+        assertTrue(taskManager.epics.isEmpty());
+        assertTrue(taskManager.subtasks.isEmpty());
     }
 
     @Test
     public void testDeleteSubtask() {
         taskManager.deleteSubtasks();
-        assertTrue(subtasks.isEmpty());
+        assertTrue(taskManager.subtasks.isEmpty());
     }
 
     @Test
@@ -134,13 +145,13 @@ public class InMemoryTaskManagerTest {
     @Test
     public void testDeleteEpicById() {
         taskManager.deleteEpicById(epic.getId());
-        assertTrue(epics.isEmpty());
+        assertTrue(taskManager.epics.isEmpty());
     }
 
     @Test
     public void testDeleteSubtaskById() {
         taskManager.deleteSubtaskById(subtask.getId());
-        assertTrue(subtasks.isEmpty());
+        assertTrue(taskManager.subtasks.isEmpty());
     }
 
 

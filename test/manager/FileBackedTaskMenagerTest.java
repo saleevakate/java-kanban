@@ -1,5 +1,6 @@
 package manager;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -21,8 +22,8 @@ class FileBackedTaskManagerTest {
     @TempDir
     protected Path tempDir;
 
-    FileBackedTaskManager taskManager = Managers.getDefaultManager();
-    private Path savedTasksFile;
+    FileBackedTaskManager taskManager;
+    private Path testFile;
     Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
             , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
 
@@ -34,17 +35,25 @@ class FileBackedTaskManagerTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        savedTasksFile = tempDir.resolve("tasks.csv");
-        taskManager = new FileBackedTaskManager(savedTasksFile.toFile());
-        Files.createFile(savedTasksFile);
+        testFile = tempDir.resolve("test.csv");
+        taskManager = new FileBackedTaskManager(testFile.toFile());
+        Files.createFile(testFile);
         taskManager.createTask(task);
         taskManager.createEpic(epic);
         taskManager.createSubtask(subtask, subtask.getEpicId());
     }
 
+    @AfterEach
+    public void delete() throws IOException {
+        taskManager.deleteTasks();
+        taskManager.deleteEpics();
+        taskManager.deleteSubtasks();
+        Files.delete(testFile);
+    }
+
     @Test
     void testSave() throws IOException {
-        String content = Files.readString(savedTasksFile);
+        String content = Files.readString(testFile);
         String[] lines = content.split("\n");
         assertEquals("id,type,name,status,description,duration,startTime,epic", lines[0].trim());
         String expectedTaskLine = "1,TASK,Выбросить мусор,NEW,Весь,PT10M,2000-01-01T01:00,";
@@ -57,25 +66,21 @@ class FileBackedTaskManagerTest {
 
     @Test
     void testLoadFromFile() throws IOException {
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(savedTasksFile.toFile());
-        Task loadedTask = loadedManager.getTaskById(1);
+        Task loadedTask = taskManager.getTaskById(1);
         assertEquals(1, loadedTask.getId());
         assertEquals("Выбросить мусор", loadedTask.getName());
         assertEquals(TaskStatus.NEW, loadedTask.getTaskStatus());
         assertEquals("Весь", loadedTask.getDescription());
         assertEquals(Duration.ofMinutes(10), loadedTask.getDuration());
         assertEquals(LocalDateTime.of(2000, 1, 1, 1, 0), loadedTask.getStartTime());
-
-        Epic loadedEpic = loadedManager.getEpicById(2);
+        Epic loadedEpic = taskManager.getEpicById(2);
         assertEquals(2, loadedEpic.getId());
         assertEquals("Собрать вещи", loadedEpic.getName());
         assertEquals(TaskStatus.NEW, loadedEpic.getTaskStatus());
         assertEquals("Все", loadedEpic.getDescription());
         assertEquals(Duration.ofMinutes(30), loadedEpic.getDuration());
         assertEquals(LocalDateTime.of(2000, 3, 3, 3, 0), loadedEpic.getStartTime());
-
-        // Проверяем подзадачу
-        Subtask loadedSubtask = loadedManager.getSubtaskById(3);
+        Subtask loadedSubtask = taskManager.getSubtaskById(3);
         assertNotNull(loadedSubtask, "Подзадача не загружена");
         assertEquals(3, loadedSubtask.getId());
         assertEquals("Помыть полы", loadedSubtask.getName());  // Исправлено
