@@ -15,19 +15,19 @@ public class Main {
         FileBackedTaskManager taskManager = Managers.getDefaultManager();
         Scanner scanner = new Scanner(System.in);
         taskManager.loadFromFile(taskManager.savedTasksFile);
-        Task task1 = new Task(1, "Таск1", "Весь", TaskStatus.NEW
-                , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
-        Task task2 = new Task(2, "Таск2", "Все", TaskStatus.DONE
-                , Duration.ofMinutes(90), LocalDateTime.of(2000, 2, 2, 2, 0));
+        Task task1 = new Task(1, "Таск1", "Весь", TaskStatus.NEW,
+                Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
+        Task task2 = new Task(2, "Таск2", "Все", TaskStatus.DONE,
+                Duration.ofMinutes(90), LocalDateTime.of(2000, 2, 2, 2, 0));
 
-        Epic epic = new Epic(3, "Эпик", "Все", TaskStatus.NEW
-                , Duration.ofMinutes(90), LocalDateTime.of(2000, 3, 3, 3, 0));
+        Epic epic = new Epic(3, "Эпик", "Все", TaskStatus.NEW,
+                Duration.ofMinutes(90), LocalDateTime.of(2000, 3, 3, 3, 0));
 
-        Subtask subtask1 = new Subtask(4, "Сабтаск1", "Все", 3, TaskStatus.DONE
-                , Duration.ofMinutes(90), LocalDateTime.of(2000, 4, 4, 4, 0));
+        Subtask subtask1 = new Subtask(4, "Сабтаск1", "Все", 3, TaskStatus.DONE,
+                Duration.ofMinutes(90), LocalDateTime.of(2000, 4, 4, 4, 0));
 
-        Subtask subtask2 = new Subtask(5, "Сабтаск2", "Все", 3, TaskStatus.DONE
-                , Duration.ofMinutes(50), LocalDateTime.of(2000, 5, 5, 5, 0));
+        Subtask subtask2 = new Subtask(5, "Сабтаск2", "Все", 3, TaskStatus.DONE,
+                Duration.ofMinutes(50), LocalDateTime.of(2000, 5, 5, 5, 0));
 
         while (true) {
             System.out.println("Привет!");

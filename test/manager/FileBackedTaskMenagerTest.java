@@ -24,14 +24,14 @@ class FileBackedTaskManagerTest {
 
     FileBackedTaskManager taskManager;
     private Path testFile;
-    Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW
-            , Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
+    Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW,
+            Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
 
-    Epic epic = new Epic(2, "Собрать вещи", "Все", TaskStatus.NEW
-            , Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
+    Epic epic = new Epic(2, "Собрать вещи", "Все", TaskStatus.NEW,
+            Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
 
-    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2, TaskStatus.NEW
-            , Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
+    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2, TaskStatus.NEW,
+            Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     @BeforeEach
     void setUp() throws IOException {
