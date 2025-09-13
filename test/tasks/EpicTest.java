@@ -26,8 +26,8 @@ public class EpicTest {
     @BeforeEach
     public void setUp() {
         taskManager.createEpic(epic);
-        taskManager.createSubtask(subtask1, subtask1.getEpicId());
-        taskManager.createSubtask(subtask2, subtask2.getEpicId());
+        taskManager.createSubtask(subtask1);
+        taskManager.createSubtask(subtask2);
     }
 
     @AfterEach

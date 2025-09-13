@@ -10,30 +10,40 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    protected static int idCounter = 0;
-    protected static Map<Integer, Task> tasks = new HashMap<>();
-    protected static Map<Integer, Epic> epics = new HashMap<>();
-    protected static Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected int idCounter = 0;
+    protected Map<Integer, Task> tasks = new HashMap<>();
+    protected Map<Integer, Epic> epics = new HashMap<>();
+    protected Map<Integer, Subtask> subtasks = new HashMap<>();
     protected HistoryManager historyManager = Managers.getDefaultHistory();
-    public static TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
+    public TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
 
-    public void getAllTasks() {
-        System.out.println("Список всех задач:");
-
+    @Override
+    public List<Task> getTasks() {
+        List<Task> tasksList = new ArrayList<>();
         tasks.values().stream()
-                .forEach(task -> System.out.println("Задача: " + task.getName() + ", ID: " + task.getId()));
-
-        epics.values().stream()
-                .forEach(epic -> System.out.println("Эпик: " + epic.getName() + ", ID: " + epic.getId()));
-
-        subtasks.values().stream()
-                .forEach(subtask -> System.out.println("Подзадача: " + subtask.getName() + ", ID: " + subtask.getId()));
+                .forEach(task -> tasksList.add(task));
+        return tasksList;
     }
 
+    @Override
+    public List<Subtask> getSubtasks() {
+        List<Subtask> subtasksList = new ArrayList<>();
+        subtasks.values().stream()
+                .forEach(subtask -> subtasksList.add(subtask));
+        return subtasksList;
+    }
+
+    @Override
+    public List<Epic> getEpics() {
+        List<Epic> epicList = new ArrayList<>();
+        epics.values().stream()
+                .forEach(epicList::add);
+        return epicList;
+    }
 
     @Override
     public int generateId() {
-        return 0;
+        return idCounter++;
     }
 
     @Override
@@ -55,36 +65,34 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
-        epic.updateTime();
-        prioritizedTasks.stream()
-                .filter(task -> !overLap(epic, task))
-                .findFirst()
-                .ifPresentOrElse(
-                        overLappedEpic -> {
-                            String message = "Задача" + epic.getName() + "пересекается с задачей" + overLappedEpic.getName();
-                            throw new TaskVlidationExeption(message);
-                        },
-                        () -> {
-                            epics.put(epic.getId(), epic);
-                            prioritizedTasks.add(epic);
-                        }
-                );
+        epics.put(epic.getId(), epic);
     }
 
     @Override
-    public void createSubtask(Subtask subtask, int epicId) {
-        Epic parentTask = getEpicById(epicId);
+    public void createSubtask(Subtask subtask) {
+        Epic parentTask = getEpicById(subtask.getEpicId());
         if (parentTask == null) {
             throw new IllegalArgumentException("Такого эпика нет");
         }
         if (subtask.getEpicId() == subtask.getId()) {
             throw new IllegalArgumentException("Подзадача не может быть своим же эпиком");
         }
-        parentTask.addSubtask(subtask);
-        subtasks.put(subtask.getId(), subtask);
-        prioritizedTasks.add(subtask);
-        updateEpicStatus(epicId);
-        parentTask.updateTime();
+        prioritizedTasks.stream()
+                .filter(subtask1 -> !overLap(subtask, subtask1))
+                .findFirst()
+                .ifPresentOrElse(
+                        overLappedSubtask -> {
+                            String message = "Задача" + subtask.getName() + "пересекается с задачей" + overLappedSubtask.getName();
+                            throw new TaskVlidationExeption(message);
+                        },
+                        () -> {
+                            parentTask.addSubtask(subtask);
+                            subtasks.put(subtask.getId(), subtask);
+                            prioritizedTasks.add(subtask);
+                            updateEpicStatus(parentTask.getId());
+                            parentTask.updateTime();
+                        }
+                        );
     }
 
     @Override
@@ -226,19 +234,26 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.setTaskStatus(TaskStatus.NEW);
             return;
         }
-        boolean allNew = subtaskIds.stream()
-                .peek(subtask -> {
-                    if (subtask == null) {
-                        throw new IllegalStateException("Подзадача с ID " + subtask.getId() + " не найдена");
-                    }
-                })
-                .allMatch(subtask -> subtask.getTaskStatus() == TaskStatus.NEW);
+        boolean allNew = true;
+        boolean allDone = true;
+        boolean hasInProgress = false;
+        for (Subtask subtask : subtaskIds) {
+            if (subtask == null) {
+                throw new IllegalStateException("Подзадача " + subtask + " не найдена");
+            }
 
-        boolean allDone = subtaskIds.stream()
-                .allMatch(subtask -> subtask.getTaskStatus() == TaskStatus.DONE);
-
-        boolean hasInProgress = subtaskIds.stream()
-                .anyMatch(subtask -> subtask.getTaskStatus() == TaskStatus.IN_PROGRESS);
+            TaskStatus status = subtask.getTaskStatus();
+            if (status != TaskStatus.NEW) {
+                allNew = false;
+            }
+            if (status != TaskStatus.DONE) {
+                allDone = false;
+            }
+            if (status == TaskStatus.IN_PROGRESS) {
+                hasInProgress = true;
+                break;
+            }
+        }
         if (allNew) {
             epicTask.setTaskStatus(TaskStatus.NEW);
         } else if (allDone) {

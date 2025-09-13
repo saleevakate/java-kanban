@@ -53,7 +53,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTaskManager loadFromFile(File savedTasksFile) {
+    public FileBackedTaskManager loadFromFile(File savedTasksFile) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(savedTasksFile.toPath())) {
             bufferedReader.readLine();
             FileBackedTaskManager manager = new FileBackedTaskManager(savedTasksFile);
@@ -69,7 +69,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         }
                         Subtask subtask = new Subtask(sub.getId(), sub.getName(), sub.getDescription(), sub.getEpicId(), sub.getTaskStatus(),
                                 sub.getDuration(), sub.getStartTime());
-                        manager.createSubtask(subtask, subtask.getEpicId());
+                        manager.createSubtask(subtask);
                     } else if (task.getType() == TaskType.EPIC) {
                         Epic epic1 = (Epic) task;
                         if (epic1.getId() > maxId) {
@@ -114,8 +114,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void createSubtask(Subtask subtask, int epicId) {
-        super.createSubtask(subtask, epicId);
+    public void createSubtask(Subtask subtask) {
+        super.createSubtask(subtask);
         save();
     }
 

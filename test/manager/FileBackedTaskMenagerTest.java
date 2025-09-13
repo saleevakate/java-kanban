@@ -40,7 +40,7 @@ class FileBackedTaskManagerTest {
         Files.createFile(testFile);
         taskManager.createTask(task);
         taskManager.createEpic(epic);
-        taskManager.createSubtask(subtask, subtask.getEpicId());
+        taskManager.createSubtask(subtask);
     }
 
     @AfterEach

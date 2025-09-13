@@ -9,13 +9,19 @@ import java.util.List;
 
 public interface TaskManager {
 
+    List<Task> getTasks();
+
+    List<Subtask> getSubtasks();
+
+    List<Epic> getEpics();
+
     int generateId();
 
     void createTask(Task newTask);
 
     void createEpic(Epic newEpic);
 
-    void createSubtask(Subtask newSubtask, int epicId);
+    void createSubtask(Subtask newSubtask);
 
     Task getTaskById(int id);
 

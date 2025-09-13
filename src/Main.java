@@ -42,15 +42,17 @@ public class Main {
             int command = scanner.nextInt();
             switch (command) {
                 case 1: {
-                    taskManager.getAllTasks();
+                    System.out.println(taskManager.getTasks());
+                    System.out.println(taskManager.getSubtasks());
+                    System.out.println(taskManager.getEpics());
                     break;
                 }
                 case 2: {
                     taskManager.createTask(task1);
                     taskManager.createTask(task2);
                     taskManager.createEpic(epic);
-                    taskManager.createSubtask(subtask1, subtask1.getEpicId());
-                    taskManager.createSubtask(subtask2, subtask2.getEpicId());
+                    taskManager.createSubtask(subtask1);
+                    taskManager.createSubtask(subtask2);
                     break;
                 }
                 case 3: {
