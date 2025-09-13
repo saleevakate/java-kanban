@@ -292,8 +292,8 @@ public class InMemoryTaskManager implements TaskManager {
         LocalDateTime end1 = task1.getEndTime();
         LocalDateTime start2 = task2.getStartTime();
         LocalDateTime end2 = task2.getEndTime();
-        boolean notOverLap = start2.isAfter(end1) || start1.isAfter(end2);
-        return notOverLap;
+        boolean overLap = start2.isAfter(end1) || start1.isAfter(end2);
+        return overLap;
     }
 
     public class TaskVlidationExeption extends RuntimeException {

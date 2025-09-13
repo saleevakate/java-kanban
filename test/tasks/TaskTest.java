@@ -16,7 +16,7 @@ public class TaskTest {
 
     @BeforeEach
     public void setUp() {
-        task = new Task(1, "Имя", "Описание", TaskStatus.NEW, minutes, time);
+        task = new Task(1, "Имя", "Описание", minutes, time);
     }
 
     @Test

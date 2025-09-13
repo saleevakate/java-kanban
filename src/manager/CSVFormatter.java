@@ -48,7 +48,8 @@ public class CSVFormatter {
                 Duration duration = Duration.parse(parts[5].trim());
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
                         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                task = new Task(id, name, description, status, duration, startTime);
+                task = new Task(id, name, description, duration, startTime);
+                task.setTaskStatus(status);
                 break;
             }
             case "EPIC": {
@@ -58,7 +59,8 @@ public class CSVFormatter {
                 Duration duration = Duration.parse(parts[5].trim());
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
                         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
-                task = new Epic(id, name, description, status, duration, startTime);
+                task = new Epic(id, name, description, duration, startTime);
+                task.setTaskStatus(status);
                 break;
             }
             case "SUBTASK": {
@@ -72,7 +74,8 @@ public class CSVFormatter {
                 LocalDateTime startTime = LocalDateTime.parse(parts[6],
                         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
                 int epicId = Integer.parseInt(parts[7].trim());
-                task = new Subtask(id, name, description, epicId, status, duration, startTime);
+                task = new Subtask(id, name, description, epicId, duration, startTime);
+                task.setTaskStatus(status);
                 break;
             }
         }

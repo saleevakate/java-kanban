@@ -67,16 +67,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         if (sub.getId() > maxId) {
                             maxId = sub.getId();
                         }
-                        Subtask subtask = new Subtask(sub.getId(), sub.getName(), sub.getDescription(), sub.getEpicId(), sub.getTaskStatus(),
+                        Subtask subtask = new Subtask(sub.getId(), sub.getName(), sub.getDescription(), sub.getEpicId(),
                                 sub.getDuration(), sub.getStartTime());
+                        subtask.setTaskStatus(sub.getTaskStatus());
                         manager.createSubtask(subtask);
                     } else if (task.getType() == TaskType.EPIC) {
                         Epic epic1 = (Epic) task;
                         if (epic1.getId() > maxId) {
                             maxId = epic1.getId();
                         }
-                        Epic epic = new Epic(epic1.getId(), epic1.getName(), epic1.getDescription(), epic1.getTaskStatus(),
+                        Epic epic = new Epic(epic1.getId(), epic1.getName(), epic1.getDescription(),
                                 epic1.getDuration(), epic1.getStartTime());
+                        epic.setTaskStatus(epic1.getTaskStatus());
                         manager.createEpic(epic);
                     } else if (task.getType() == TaskType.TASK) {
                         Task task1 = task;

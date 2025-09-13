@@ -13,11 +13,11 @@ public class Task {
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;
 
-    public Task(int id, String name, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
+    public Task(int id, String name, String description, Duration duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.taskStatus = taskStatus;
+        this.taskStatus = TaskStatus.NEW;
         this.duration = duration;
         this.startTime = startTime;
     }

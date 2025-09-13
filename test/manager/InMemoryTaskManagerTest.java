@@ -25,13 +25,13 @@ public class InMemoryTaskManagerTest {
     FileBackedTaskManager taskManager;
     private Path testFile;
 
-    Task task = new Task(1, "Выбросить мусор", "Весь", TaskStatus.NEW,
+    Task task = new Task(1, "Выбросить мусор", "Весь",
             Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
 
-    Epic epic = new Epic(2, "Собрать вещи", "Все", TaskStatus.NEW,
+    Epic epic = new Epic(2, "Собрать вещи", "Все",
             Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
 
-    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2, TaskStatus.NEW,
+    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2,
             Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     Duration minutes = Duration.ofMinutes(9);
@@ -99,21 +99,21 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateTask() {
-        Task newTask = new Task(1, "Имя10", "Описание10", TaskStatus.NEW, minutes, time);
+        Task newTask = new Task(1, "Имя10", "Описание10", minutes, time);
         taskManager.updateTask(newTask);
         assertEquals("Имя10", taskManager.getTaskById(1).getName());
     }
 
     @Test
     public void testUpdateEpic() {
-        Epic newEpic = new Epic(2, "Эпик10", "Описание10", TaskStatus.NEW, minutes, time);
+        Epic newEpic = new Epic(2, "Эпик10", "Описание10", minutes, time);
         taskManager.updateEpic(newEpic);
         assertEquals("Эпик10", taskManager.getEpicById(2).getName());
     }
 
     @Test
     public void testUpdateSubtask() {
-        Subtask newSubtask = new Subtask(3, "Сабтаск10", "Описание10", 2, TaskStatus.NEW, minutes, time);
+        Subtask newSubtask = new Subtask(3, "Сабтаск10", "Описание10", 2, minutes, time);
         taskManager.updateSubtask(newSubtask);
         assertEquals("Сабтаск10", taskManager.getSubtaskById(3).getName());
     }
@@ -172,5 +172,17 @@ public class InMemoryTaskManagerTest {
     public void testUpdateEpicStatus() {
         taskManager.updateSubtaskStatus(subtask.getId(), TaskStatus.DONE);
         assertEquals(TaskStatus.DONE, epic.getTaskStatus());
+    }
+
+    @Test
+    public void testNoOverLap() {
+        assertTrue(taskManager.overLap(task, subtask));
+    }
+
+    @Test
+    public void testOverLap() {
+        Task task1 = new Task (5, "Выбросить мусор", "Весь",
+                Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 5));
+        assertFalse(taskManager.overLap(task, task1));
     }
 }
