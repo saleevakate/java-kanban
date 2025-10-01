@@ -6,11 +6,14 @@ import tasks.Task;
 import tasks.TaskStatus;
 
 import java.util.List;
-import java.util.Set;
 
 public interface TaskManager {
 
-    void getTasks();
+    List<Task> getTasks();
+
+    List<Subtask> getSubtasks();
+
+    List<Epic> getEpics();
 
     int generateId();
 
@@ -18,7 +21,7 @@ public interface TaskManager {
 
     void createEpic(Epic newEpic);
 
-    void createSubtask(Subtask newSubtask, int epicId);
+    void createSubtask(Subtask newSubtask);
 
     Task getTaskById(int id);
 
@@ -50,7 +53,7 @@ public interface TaskManager {
 
     void updateSubtaskStatus(int id, TaskStatus taskStatus);
 
-    Set<Integer> getSubtasksByEpicId(int id);
+    List<Subtask> getSubtasksByEpicId(int id);
 
     List<Task> getHistory();
 

@@ -1,21 +1,64 @@
 package tasks;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private Set<Integer> subtasksId = new HashSet<>();
+    private List<Subtask> subtasksList = new ArrayList<>();
 
-    public Epic(int id, String name, String description, TaskStatus taskStatus) {
-        super(id, name, description, taskStatus);
+    public Epic(int id, String name, String description, Duration duration, LocalDateTime startTime) {
+        super(id, name, description, duration, startTime);
+        updateTime();
     }
 
-    public Set<Integer> getSubtasks() {
-        return subtasksId;
+    public void updateTime() {
+        if (endTime == null) {
+            endTime = getStartTime().plus(getDuration());
+        }
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+        Duration totalDuration = Duration.ZERO;
+        for (Subtask subtask : subtasksList) {
+            if (subtask.getStartTime() != null && subtask.getDuration() != null) {
+                if (start == null || subtask.getStartTime().isBefore(start)) {
+                    start = subtask.getStartTime();
+                }
+
+                if (subtask.getEndTime() != null) {
+                    if (end == null || subtask.getEndTime().isAfter(end)) {
+                        end = subtask.getEndTime();
+                    }
+                }
+
+                totalDuration = totalDuration.plus(subtask.getDuration());
+            }
+        }
+        if (start != null) {
+            setStartTime(start);
+        }
+        if (totalDuration != Duration.ZERO) {
+            setDuration(totalDuration);
+        }
+        if (end != null) {
+            this.endTime = end;
+        }
     }
 
-    public void addSubtask(int id) {
-        subtasksId.add(id);
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public List<Subtask> getSubtasks() {
+        return subtasksList;
+    }
+
+    public void addSubtask(Subtask subtask) {
+        if (!subtasksList.contains(subtask)) {
+            subtasksList.add(subtask);
+        }
     }
 
     @Override
