@@ -10,7 +10,7 @@ import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    protected int idCounter = 0;
+    protected int idCounter = 1;
     protected Map<Integer, Task> tasks = new HashMap<>();
     protected Map<Integer, Epic> epics = new HashMap<>();
     protected Map<Integer, Subtask> subtasks = new HashMap<>();
@@ -57,6 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
                             throw new TaskVlidationExeption(message);
                         },
                         () -> {
+                            task.setId(generateId());
                             tasks.put(task.getId(), task);
                             prioritizedTasks.add(task);
                         }
@@ -65,6 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createEpic(Epic epic) {
+        epic.setId(generateId());
         epics.put(epic.getId(), epic);
     }
 
@@ -86,6 +88,7 @@ public class InMemoryTaskManager implements TaskManager {
                             throw new TaskVlidationExeption(message);
                         },
                         () -> {
+                            subtask.setId(generateId());
                             parentTask.addSubtask(subtask);
                             subtasks.put(subtask.getId(), subtask);
                             prioritizedTasks.add(subtask);
