@@ -290,7 +290,7 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean priorityCheck(Task task) {
         boolean priorityTask = false;
         Optional<Task> overlappingTask = prioritizedTasks.stream()
-                .filter(task1 -> overLap(task, task1))
+                .filter(task1 -> !overLap(task, task1))
                 .findFirst();
         if (overlappingTask.isPresent()) {
             Task overLappedTask = overlappingTask.get();

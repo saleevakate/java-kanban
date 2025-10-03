@@ -15,7 +15,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
         this.gson = gson;
     }
 
-    @Override
+
     public abstract void handle(HttpExchange exchange) throws IOException;
 
     //код 200 сервер корректно выполнил запрос и вернул данные
