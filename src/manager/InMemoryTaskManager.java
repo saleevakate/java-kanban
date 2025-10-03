@@ -48,20 +48,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void createTask(Task task) {
-        prioritizedTasks.stream()
-                .filter(task1 -> !overLap(task, task1))
-                .findFirst()
-                .ifPresentOrElse(
-                        overLappedTask -> {
-                            String message = "Задача" + task.getName() + "пересекается с задачей" + overLappedTask.getName();
-                            throw new TaskVlidationExeption(message);
-                        },
-                        () -> {
-                            task.setId(generateId());
-                            tasks.put(task.getId(), task);
-                            prioritizedTasks.add(task);
-                        }
-                );
+        task.setId(generateId());
+        if (!priorityCheck(task)) {
+            tasks.put(task.getId(), task);
+            prioritizedTasks.add(task);
+        }
     }
 
     @Override
@@ -79,23 +70,15 @@ public class InMemoryTaskManager implements TaskManager {
         if (subtask.getEpicId() == subtask.getId()) {
             throw new IllegalArgumentException("Подзадача не может быть своим же эпиком");
         }
-        prioritizedTasks.stream()
-                .filter(subtask1 -> !overLap(subtask, subtask1))
-                .findFirst()
-                .ifPresentOrElse(
-                        overLappedSubtask -> {
-                            String message = "Задача" + subtask.getName() + "пересекается с задачей" + overLappedSubtask.getName();
-                            throw new TaskVlidationExeption(message);
-                        },
-                        () -> {
-                            subtask.setId(generateId());
-                            parentTask.addSubtask(subtask);
-                            subtasks.put(subtask.getId(), subtask);
-                            prioritizedTasks.add(subtask);
-                            updateEpicStatus(parentTask.getId());
-                            parentTask.updateTime();
-                        }
-                        );
+        subtask.setId(generateId());
+        if (!priorityCheck(subtask)) {
+            parentTask.addSubtask(subtask);
+            subtasks.put(subtask.getId(), subtask);
+            prioritizedTasks.add(subtask);
+            updateEpicStatus(parentTask.getId());
+            parentTask.updateTime();
+        }
+
     }
 
     @Override
@@ -299,8 +282,21 @@ public class InMemoryTaskManager implements TaskManager {
         return overLap;
     }
 
-    public class TaskVlidationExeption extends RuntimeException {
-        public TaskVlidationExeption(String message) {
+    public boolean priorityCheck(Task task) {
+        boolean priorityTask = false;
+        Optional<Task> overlappingTask = prioritizedTasks.stream()
+                .filter(task1 -> overLap(task, task1))
+                .findFirst();
+        if (overlappingTask.isPresent()) {
+            Task overLappedTask = overlappingTask.get();
+            String message = "Задача " + task.getName() + " пересекается с задачей " + overLappedTask.getName();
+            throw new TaskValidationException(message);
+        }
+        return priorityTask;
+    }
+
+    public class TaskValidationException extends RuntimeException {
+        public TaskValidationException(String message) {
             super(message);
         }
     }
