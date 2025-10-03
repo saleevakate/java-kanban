@@ -69,7 +69,7 @@ public class TaskHandler extends BaseHttpHandler {
             if (task.getId() == 0 && !taskManager.priorityCheck(task)) {
                 taskManager.createTask(task);
                 code201(exchange, "Задача добавлена");
-            } else if (task.getId() != 0 && !taskManager.priorityCheck(task)){
+            } else if (task.getId() != 0 && !taskManager.priorityCheck(task)) {
                 taskManager.updateTask(task);
                 code201(exchange, "Задача обновлена");
             } else {
