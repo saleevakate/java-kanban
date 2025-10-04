@@ -3,8 +3,8 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
-import manager.FileBackedTaskManager;
 import manager.Managers;
+import manager.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 
 public class HttpTaskServer {
     private static final int PORT = 8080;
-    private static FileBackedTaskManager taskManager;
+    private TaskManager taskManager;
     private final Gson gson;
     private HttpServer server;
 
-    public HttpTaskServer(FileBackedTaskManager taskManager) {
+    public HttpTaskServer(TaskManager taskManager) {
         this.taskManager = taskManager;
         this.gson = new GsonBuilder().registerTypeAdapter(Duration.class, new DurationAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();

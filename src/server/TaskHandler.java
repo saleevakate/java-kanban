@@ -2,7 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import manager.FileBackedTaskManager;
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
 import tasks.NotFoundException;
 import tasks.Task;
 
@@ -10,9 +11,9 @@ import java.io.IOException;
 import java.net.URI;
 
 public class TaskHandler extends BaseHttpHandler {
-    private final FileBackedTaskManager taskManager;
+    private TaskManager taskManager;
 
-    public TaskHandler(FileBackedTaskManager taskManager, Gson gson) {
+    public TaskHandler(TaskManager taskManager, Gson gson) {
         super(gson);
         this.taskManager = taskManager;
     }
@@ -66,15 +67,15 @@ public class TaskHandler extends BaseHttpHandler {
                 sendResponse(exchange, 404, "Ошибка. Задача пуста");
                 return;
             }
-            if (task.getId() == 0 && !taskManager.priorityCheck(task)) {
+            if (task.getId() == 0) {
                 taskManager.createTask(task);
                 code201(exchange, "Задача добавлена");
-            } else if (task.getId() != 0 && !taskManager.priorityCheck(task)) {
+            } else {
                 taskManager.updateTask(task);
                 code201(exchange, "Задача обновлена");
-            } else {
-                code404(exchange);
             }
+        } catch (InMemoryTaskManager.TaskValidationException e) {
+            code406(exchange);
         } catch (NotFoundException e) {
             code500(exchange);
         }

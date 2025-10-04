@@ -2,7 +2,8 @@ package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import manager.FileBackedTaskManager;
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
 import tasks.NotFoundException;
 import tasks.Subtask;
 
@@ -10,9 +11,9 @@ import java.io.IOException;
 import java.net.URI;
 
 public class SubtaskHandler extends BaseHttpHandler {
-    private final FileBackedTaskManager taskManager;
+    private TaskManager taskManager;
 
-    public SubtaskHandler(FileBackedTaskManager taskManager, Gson gson) {
+    public SubtaskHandler(TaskManager taskManager, Gson gson) {
         super(gson);
         this.taskManager = taskManager;
     }
@@ -69,11 +70,12 @@ public class SubtaskHandler extends BaseHttpHandler {
             if (subtask.getId() == 0) {
                 taskManager.createSubtask(subtask);
                 code201(exchange, "Сабтаск добавлен");
-            } else if (subtask.getId() != 0) {
+            } else {
                 taskManager.updateSubtask(subtask);
                 code201(exchange, "Сабтаск обновлен");
             }
-
+        } catch (InMemoryTaskManager.TaskValidationException e) {
+            code406(exchange);
         } catch (NotFoundException e) {
             code500(exchange);
         }

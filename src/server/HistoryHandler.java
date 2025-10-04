@@ -2,7 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import manager.FileBackedTaskManager;
+import manager.TaskManager;
 import tasks.NotFoundException;
 import tasks.Task;
 
@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class HistoryHandler extends BaseHttpHandler {
-    private final FileBackedTaskManager taskManager;
+    private final TaskManager taskManager;
 
-    public HistoryHandler(FileBackedTaskManager taskManager, Gson gson) {
+    public HistoryHandler(TaskManager taskManager, Gson gson) {
         super(gson);
         this.taskManager = taskManager;
     }

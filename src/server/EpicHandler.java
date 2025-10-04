@@ -2,7 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
-import manager.FileBackedTaskManager;
+import manager.TaskManager;
 import tasks.Epic;
 import tasks.NotFoundException;
 
@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.net.URI;
 
 public class EpicHandler extends BaseHttpHandler {
-    private final FileBackedTaskManager taskManager;
+    private TaskManager taskManager;
 
-    public EpicHandler(FileBackedTaskManager taskManager, Gson gson) {
+    public EpicHandler(TaskManager taskManager, Gson gson) {
         super(gson);
         this.taskManager = taskManager;
     }
@@ -75,7 +75,6 @@ public class EpicHandler extends BaseHttpHandler {
                 taskManager.updateEpic(epic);
                 code201(exchange, "Эпик обновлен");
             }
-
         } catch (NotFoundException e) {
             code500(exchange);
         }
