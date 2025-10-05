@@ -24,13 +24,13 @@ public class InMemoryTaskHistoryTest {
     FileBackedTaskManager taskManager;
     private Path testFile;
 
-    Task task = new Task(1, "Выбросить мусор", "Весь",
+    Task task = new Task(0, "Выбросить мусор", "Весь",
             Duration.ofMinutes(10), LocalDateTime.of(2000, 1, 1, 1, 0));
 
-    Epic epic = new Epic(2, "Собрать вещи", "Все",
+    Epic epic = new Epic(0, "Собрать вещи", "Все",
             Duration.ofMinutes(20), LocalDateTime.of(2000, 2, 2, 2, 0));
 
-    Subtask subtask = new Subtask(3, "Помыть полы", "Все", 2,
+    Subtask subtask = new Subtask(0, "Помыть полы", "Все", 2,
             Duration.ofMinutes(30), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     @BeforeEach

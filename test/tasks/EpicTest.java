@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EpicTest {
 
     FileBackedTaskManager taskManager = Managers.getDefaultManager();
-    Epic epic = new Epic(2, "Собрать вещи", "Все",
+    Epic epic = new Epic(0, "Собрать вещи", "Все",
             Duration.ofMinutes(30), LocalDateTime.of(2000, 1, 1, 1, 0));
 
-    Subtask subtask1 = new Subtask(4, "Помыть полы", "Все", 2,
+    Subtask subtask1 = new Subtask(0, "Помыть полы", "Все", 1,
             Duration.ofMinutes(30), LocalDateTime.of(2000, 2, 2, 2, 0));
 
-    Subtask subtask2 = new Subtask(5, "Помыть полы", "Все", 2,
+    Subtask subtask2 = new Subtask(0, "Помыть полы", "Все", 1,
             Duration.ofMinutes(3), LocalDateTime.of(2000, 3, 3, 3, 0));
 
     @BeforeEach
